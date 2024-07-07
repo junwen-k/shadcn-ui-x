@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import {
   DatePicker,
   DatePickerCalendar,
-  DatePickerClear,
   DatePickerContent,
+  DatePickerInput,
   DatePickerTrigger,
   DatePickerValue,
 } from "@/components/ui/date-picker"
@@ -24,7 +24,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
 
 /**
- * The Date Picker is built using a composition of the <Popover /> and the <Calendar /> components.
+ * The Date Picker is built using a composition of the `<Popover />` and the `<Calendar />` components.
  *
  * ### Anatomy:
  *
@@ -33,6 +33,9 @@ import { toast } from "@/components/ui/use-toast"
  *  <DatePicker.Trigger>
  *    <DatePicker.Value />
  *  </DatePicker.Trigger>
+ *
+ *  <DatePicker.Input />
+ *
  *  <DatePicker.Content>
  *    <DatePicker.Calendar />
  *  </DatePicker.Content>
@@ -43,15 +46,15 @@ const meta = {
   title: "Components/DatePicker",
   component: DatePicker,
   subcomponents: {
-    DatePickerCalendar,
-    DatePickerClear,
-    DatePickerContent,
+    DatePickerInput,
     DatePickerTrigger,
     DatePickerValue,
+    DatePickerContent,
+    DatePickerCalendar,
   } as any,
   render: (args) => (
     <DatePicker {...args}>
-      <DatePickerTrigger>
+      <DatePickerTrigger className="w-[280px]">
         <DatePickerValue placeholder="Pick a date" />
       </DatePickerTrigger>
       <DatePickerContent>
@@ -67,7 +70,18 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default = {} satisfies Story
+export const Trigger = {} satisfies Story
+
+export const Input = {
+  render: (args) => (
+    <DatePicker {...args}>
+      <DatePickerInput className="w-[280px]" />
+      <DatePickerContent>
+        <DatePickerCalendar />
+      </DatePickerContent>
+    </DatePicker>
+  ),
+} satisfies Story
 
 const FormSchema = z.object({
   date: z.date().nullable(),
@@ -103,9 +117,7 @@ function DatePickerForm() {
               <FormLabel>Date</FormLabel>
               <DatePicker value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <DatePickerTrigger>
-                    <DatePickerValue placeholder="Pick a date" />
-                  </DatePickerTrigger>
+                  <DatePickerInput className="w-[280px]" />
                 </FormControl>
                 <DatePickerContent>
                   <DatePickerCalendar />
