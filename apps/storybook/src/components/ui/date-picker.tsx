@@ -136,6 +136,8 @@ export const DatePicker = ({
   )
 }
 
+export const DatePickerAnchor = PopoverPrimitive.Anchor
+
 export const DatePickerInput = React.forwardRef<
   React.ElementRef<typeof InputBase>,
   Omit<React.ComponentPropsWithoutRef<typeof InputBase>, "children">
@@ -143,7 +145,7 @@ export const DatePickerInput = React.forwardRef<
   const { required } = useDatePickerContext()
 
   return (
-    <PopoverPrimitive.Anchor>
+    <DatePickerAnchor>
       <InputBase ref={ref} {...props}>
         <DatePickerInputBaseInput />
         {!required && <DatePickerInputAdornmentClear />}
@@ -155,7 +157,7 @@ export const DatePickerInput = React.forwardRef<
           </InputBaseAdornmentButton>
         </InputBaseAdornment>
       </InputBase>
-    </PopoverPrimitive.Anchor>
+    </DatePickerAnchor>
   )
 })
 DatePickerInput.displayName = "DatePickerInput"
@@ -163,7 +165,7 @@ DatePickerInput.displayName = "DatePickerInput"
 export const DatePickerInputAdornmentClear = React.forwardRef<
   React.ElementRef<typeof InputBaseAdornmentButton>,
   React.ComponentPropsWithoutRef<typeof InputBaseAdornmentButton>
->(({ className, onClick, ...props }, ref) => {
+>(({ onClick, ...props }, ref) => {
   const { value, inputValue, onValueChange, onInputValueChange } =
     useDatePickerContext()
 
@@ -241,7 +243,7 @@ export const DatePickerTrigger = React.forwardRef<
   <InputBase
     asChild
     className={cn(
-      "hover:bg-accent hover:text-accent-foreground w-full items-center cursor-pointer",
+      "w-full cursor-pointer items-center hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       className
     )}
   >
