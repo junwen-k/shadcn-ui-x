@@ -13,14 +13,14 @@ import {
   InputBaseInput,
 } from "@/components/ui/input-base"
 
-interface PasswordInputContextProps {
-  revealPassword: boolean
-  onRevealPasswordChange: (revealPassword: boolean) => void
-}
+type PasswordInputContextProps = Required<
+  Pick<PasswordInputProps, "revealPassword" | "onRevealPasswordChange">
+>
 
-const PasswordInputContext = React.createContext<PasswordInputContextProps>(
-  {} as PasswordInputContextProps
-)
+const PasswordInputContext = React.createContext<PasswordInputContextProps>({
+  revealPassword: false,
+  onRevealPasswordChange: () => {},
+})
 
 const usePasswordInputContext = () => React.useContext(PasswordInputContext)
 
