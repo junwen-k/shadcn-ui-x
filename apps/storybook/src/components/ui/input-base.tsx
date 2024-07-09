@@ -9,33 +9,45 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 interface InputBaseContextProps {
-  controlRef: React.RefObject<HTMLInputElement>
-  onFocusChange: (focused: boolean) => void
+  autoFocus?: boolean
+  disabled?: boolean
+  controlRef: React.RefObject<HTMLElement>
+  onFocusedChange: (focused: boolean) => void
 }
 
-const InputBaseContext = React.createContext<InputBaseContextProps>(
-  {} as InputBaseContextProps
-)
+const InputBaseContext = React.createContext<InputBaseContextProps>({
+  autoFocus: false,
+  controlRef: { current: null },
+  disabled: false,
+  onFocusedChange: () => {},
+})
 
 const useInputBaseContext = () => React.useContext(InputBaseContext)
 
 interface InputBaseProps extends React.ComponentPropsWithoutRef<"div"> {
+  autoFocus?: boolean
+  disabled?: boolean
   asChild?: boolean
 }
 
 export const InputBase = React.forwardRef<
   React.ElementRef<"div">,
   InputBaseProps
->(({ asChild, className, onClick, ...props }, ref) => {
+>(({ asChild, autoFocus, disabled, className, onClick, ...props }, ref) => {
   const Comp = asChild ? Slot : "div"
 
   const [focused, setFocused] = React.useState(false)
 
-  const controlRef = React.useRef<HTMLInputElement>(null)
+  const controlRef = React.useRef<HTMLElement>(null)
 
   return (
     <InputBaseContext.Provider
-      value={{ controlRef, onFocusChange: setFocused }}
+      value={{
+        autoFocus,
+        controlRef,
+        disabled,
+        onFocusedChange: setFocused,
+      }}
     >
       <Comp
         ref={ref}
@@ -47,9 +59,8 @@ export const InputBase = React.forwardRef<
           }
         })}
         className={cn(
-          "group flex min-h-9 cursor-text gap-3 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
-          // isInvalid && "border-error",
-          controlRef.current?.disabled && "cursor-not-allowed opacity-50",
+          "group flex min-h-9 cursor-text gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
+          disabled && "cursor-not-allowed opacity-50",
           focused && "ring-1 ring-ring",
           className
         )}
@@ -76,13 +87,16 @@ export const InputBaseControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ onFocus, onBlur, ...props }, ref) => {
-  const { controlRef, onFocusChange } = useInputBaseContext()
+  const { controlRef, autoFocus, disabled, onFocusedChange } =
+    useInputBaseContext()
 
   return (
     <Slot
       ref={composeRefs(controlRef, ref)}
-      onFocus={composeEventHandlers(onFocus, () => onFocusChange(true))}
-      onBlur={composeEventHandlers(onBlur, () => onFocusChange(false))}
+      autoFocus={autoFocus}
+      onFocus={composeEventHandlers(onFocus, () => onFocusedChange(true))}
+      onBlur={composeEventHandlers(onBlur, () => onFocusedChange(false))}
+      {...{ disabled }}
       {...props}
     />
   )
@@ -125,18 +139,30 @@ export const InputBaseAdornmentButton = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Button>
 >(
   (
-    { type = "button", variant = "ghost", size = "icon", className, ...props },
+    {
+      type = "button",
+      variant = "ghost",
+      size = "icon",
+      disabled: disabledProp,
+      className,
+      ...props
+    },
     ref
-  ) => (
-    <Button
-      ref={ref}
-      type={type}
-      variant={variant}
-      size={size}
-      className={cn("size-6", className)}
-      {...props}
-    />
-  )
+  ) => {
+    const { disabled } = useInputBaseContext()
+
+    return (
+      <Button
+        ref={ref}
+        type={type}
+        variant={variant}
+        size={size}
+        disabled={disabled || disabledProp}
+        className={cn("size-6", className)}
+        {...props}
+      />
+    )
+  }
 )
 InputBaseAdornmentButton.displayName = "InputBaseAdornmentButton"
 
@@ -147,7 +173,7 @@ export const InputBaseInput = React.forwardRef<
   <input
     ref={ref}
     className={cn(
-      "w-full flex-1 bg-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none",
+      "w-full flex-1 bg-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:pointer-events-none",
       className
     )}
     {...props}

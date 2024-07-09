@@ -58,6 +58,25 @@ type Story = StoryObj<typeof meta>
 export const Default = {} satisfies Story
 
 /**
+ * Disabled input.
+ */
+export const Disabled = {
+  args: { disabled: true },
+  render: (args) => (
+    <InputBase {...args}>
+      <InputBaseControl>
+        <InputBaseInput placeholder="Name" />
+      </InputBaseControl>
+      <InputBaseAdornment>
+        <InputBaseAdornmentButton>
+          <Info />
+        </InputBaseAdornmentButton>
+      </InputBaseAdornment>
+    </InputBase>
+  ),
+} satisfies Story
+
+/**
  * Input base can have start / end adornment(s).
  */
 export const Adornment = {
