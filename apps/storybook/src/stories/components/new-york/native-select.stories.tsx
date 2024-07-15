@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react"
 
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/registry/new-york/ui/native-select"
 
 /**
  * Native select element.
@@ -14,7 +17,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
  * ```
  */
 const meta = {
-  title: "Components/NativeSelect",
+  title: "Components/new-york/NativeSelect",
   component: NativeSelect,
   subcomponents: {
     NativeSelectOption,

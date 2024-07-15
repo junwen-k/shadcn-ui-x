@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/registry/new-york/ui/button"
 import {
   DatePicker,
   DatePickerCalendar,
@@ -11,7 +11,7 @@ import {
   DatePickerInput,
   DatePickerTrigger,
   DatePickerValue,
-} from "@/components/ui/date-picker"
+} from "@/registry/new-york/ui/date-picker"
 import {
   Form,
   FormControl,
@@ -19,9 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Toaster } from "@/components/ui/toaster"
-import { toast } from "@/components/ui/use-toast"
+} from "@/registry/new-york/ui/form"
+import { Toaster } from "@/registry/new-york/ui/toaster"
+import { toast } from "@/registry/new-york/ui/use-toast"
 
 /**
  * The Date Picker is built using a composition of the `<Popover />` and the `<Calendar />` components.
@@ -43,7 +43,7 @@ import { toast } from "@/components/ui/use-toast"
  * ```
  */
 const meta = {
-  title: "Components/DatePicker",
+  title: "Components/new-york/DatePicker",
   component: DatePicker,
   subcomponents: {
     DatePickerInput,

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { fn } from "@storybook/test"
 
-import { Button } from "@/components/ui/button"
-import { confirm, Confirmer } from "@/components/ui/confirmer"
+import { Button } from "@/registry/new-york/ui/button"
+import { confirm, Confirmer } from "@/registry/new-york/ui/confirmer"
 
 /**
  * Imperative confirm implementation based on [use-ask](https://github.com/junwen-k/use-ask).
  */
 const meta = {
-  title: "Components/Confirmer",
+  title: "Components/new-york/Confirmer",
   component: Confirmer,
   decorators: [
     (Story) => (

@@ -1,5 +1,5 @@
+import { InfoCircledIcon } from "@radix-ui/react-icons"
 import type { Meta, StoryObj } from "@storybook/react"
-import { Info } from "lucide-react"
 
 import {
   InputBase,
@@ -8,7 +8,7 @@ import {
   InputBaseControl,
   InputBaseFlexWrapper,
   InputBaseInput,
-} from "@/components/ui/input-base"
+} from "@/registry/new-york/ui/input-base"
 
 /**
  * Base component to create custom inputs.
@@ -28,7 +28,7 @@ import {
  * ```
  */
 const meta = {
-  title: "Components/InputBase",
+  title: "Components/new-york/InputBase",
   component: InputBase,
   subcomponents: {
     InputBaseAdornment,
@@ -69,7 +69,7 @@ export const Disabled = {
       </InputBaseControl>
       <InputBaseAdornment>
         <InputBaseAdornmentButton>
-          <Info />
+          <InfoCircledIcon />
         </InputBaseAdornmentButton>
       </InputBaseAdornment>
     </InputBase>
@@ -102,7 +102,7 @@ export const ActionAdornment = {
       </InputBaseControl>
       <InputBaseAdornment>
         <InputBaseAdornmentButton>
-          <Info />
+          <InfoCircledIcon />
         </InputBaseAdornmentButton>
       </InputBaseAdornment>
     </InputBase>

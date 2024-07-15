@@ -1,30 +1,30 @@
 import * as React from "react"
-import { ChevronDown } from "lucide-react"
+import { CaretSortIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import {
   InputBase,
   InputBaseAdornment,
   InputBaseControl,
-} from "@/components/ui/input-base"
+} from "@/registry/new-york/ui/input-base"
 
 export const NativeSelect = React.forwardRef<
   React.ElementRef<"select">,
   React.ComponentPropsWithoutRef<"select">
 >(({ className, ...props }, ref) => (
-  <InputBase className="p-0 relative">
+  <InputBase className="relative p-0">
     <InputBaseControl>
       <select
         ref={ref}
         className={cn(
-          "px-3 py-1 text-sm w-full flex-1 bg-transparent focus:outline-none min-w-40 text-muted-foreground appearance-none",
+          "w-full min-w-40 flex-1 appearance-none bg-transparent px-3 py-1 text-sm text-muted-foreground focus:outline-none",
           className
         )}
         {...props}
       />
     </InputBaseControl>
-    <InputBaseAdornment className="pr-3 absolute right-0 -translate-y-1/2 top-1/2">
-      <ChevronDown />
+    <InputBaseAdornment className="absolute right-0 top-1/2 -translate-y-1/2 pr-3">
+      <CaretSortIcon />
     </InputBaseAdornment>
   </InputBase>
 ))

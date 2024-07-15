@@ -6,11 +6,9 @@ import { composeRefs } from "@radix-ui/react-compose-refs"
 import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/registry/new-york/ui/button"
 
-interface InputBaseContextProps {
-  autoFocus?: boolean
-  disabled?: boolean
+type InputBaseContextProps = Pick<InputBaseProps, "autoFocus" | "disabled"> & {
   controlRef: React.RefObject<HTMLElement>
   onFocusedChange: (focused: boolean) => void
 }
@@ -59,7 +57,7 @@ export const InputBase = React.forwardRef<
           }
         })}
         className={cn(
-          "group flex min-h-9 cursor-text gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
+          "flex min-h-9 cursor-text gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
           disabled && "cursor-not-allowed opacity-50",
           focused && "ring-1 ring-ring",
           className

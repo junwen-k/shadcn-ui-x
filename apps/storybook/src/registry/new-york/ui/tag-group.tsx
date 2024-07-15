@@ -1,13 +1,10 @@
 import * as React from "react"
-import { composeEventHandlers } from "@radix-ui/primitive"
 import { Slottable } from "@radix-ui/react-slot"
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
 import { useControllableState } from "@radix-ui/react-use-controllable-state"
-import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-
-import { badgeVariants } from "./badge"
+import { Tag } from "@/registry/new-york/ui/tag"
 
 type TagGroupContextProps =
   | {
@@ -60,6 +57,7 @@ export const TagGroup = React.forwardRef<
     ref
   ) => {
     const [value = type === "single" ? "" : [], setValue] =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useControllableState<any>({
         prop: valueProp,
         defaultProp: defaultValue,
@@ -96,55 +94,39 @@ TagGroup.displayName = "TagGroup"
 export const TagGroupItem = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item>
->(({ children, className, onKeyDown, value: valueProp, ...props }, ref) => {
+>(({ children, value: valueProp, ...props }, ref) => {
   const { type, onRemove, value } = useTagGroupContext()
 
   const selected =
     type === "single" ? value === valueProp : value.includes(valueProp)
 
   return (
-    <ToggleGroupPrimitive.Item
-      ref={ref}
-      value={valueProp}
-      className={cn(
-        badgeVariants({
-          variant: selected ? "default" : "outline",
-        }),
-        "group data-[disabled]:disabled:pointer-events-none data-[disabled]:opacity-50",
-        onRemove && "gap-1 pr-1.5",
-        className
-      )}
-      onKeyDown={composeEventHandlers(onKeyDown, (event) => {
-        if (event.key === "Backspace" || event.key === "Delete") {
-          if (type === "single") {
-            onRemove?.(valueProp)
-          }
-          if (type === "multiple") {
-            onRemove?.(value.includes(valueProp) ? value : [valueProp])
-          }
+    <ToggleGroupPrimitive.Item asChild ref={ref} value={valueProp} {...props}>
+      <Tag
+        selected={selected}
+        onRemove={
+          onRemove &&
+          ((_, reason) => {
+            if (reason === "closeClick") {
+              if (type === "single") {
+                onRemove(valueProp)
+              }
+              if (type === "multiple") {
+                onRemove([valueProp])
+              }
+            } else {
+              if (type === "single") {
+                onRemove?.(valueProp)
+              }
+              if (type === "multiple") {
+                onRemove?.(value.includes(valueProp) ? value : [valueProp])
+              }
+            }
+          })
         }
-      })}
-      {...props}
-    >
-      <Slottable>{children}</Slottable>
-      {onRemove && (
-        <div
-          aria-hidden="true"
-          onClick={(event) => {
-            event.stopPropagation()
-            if (type === "single") {
-              onRemove(valueProp)
-            }
-            if (type === "multiple") {
-              onRemove([valueProp])
-            }
-          }}
-          className="group-data-[disabled]:pointer-events-none cursor-pointer rounded-sm opacity-70 transition-opacity hover:opacity-100"
-        >
-          <X className="size-4" />
-          <span className="sr-only">Remove</span>
-        </div>
-      )}
+      >
+        {children}
+      </Tag>
     </ToggleGroupPrimitive.Item>
   )
 })

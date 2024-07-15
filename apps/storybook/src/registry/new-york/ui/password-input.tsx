@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { composeEventHandlers } from "@radix-ui/primitive"
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons"
 import { useControllableState } from "@radix-ui/react-use-controllable-state"
-import { Eye, EyeOff } from "lucide-react"
 
 import {
   InputBase,
@@ -11,7 +11,7 @@ import {
   InputBaseAdornmentButton,
   InputBaseControl,
   InputBaseInput,
-} from "@/components/ui/input-base"
+} from "@/registry/new-york/ui/input-base"
 
 type PasswordInputContextProps = Required<
   Pick<PasswordInputProps, "revealPassword" | "onRevealPasswordChange">
@@ -75,7 +75,7 @@ export const PasswordInputAdornmentRevealToggle = React.forwardRef<
         )}
         {...props}
       >
-        {revealPassword ? <Eye /> : <EyeOff />}
+        {revealPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
       </InputBaseAdornmentButton>
     </InputBaseAdornment>
   )

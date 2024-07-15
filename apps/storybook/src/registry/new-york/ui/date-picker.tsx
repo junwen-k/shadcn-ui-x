@@ -2,16 +2,17 @@
 
 import React from "react"
 import { composeEventHandlers } from "@radix-ui/primitive"
+import { CalendarIcon, Cross2Icon } from "@radix-ui/react-icons"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 import { Primitive } from "@radix-ui/react-primitive"
 import type * as Radix from "@radix-ui/react-primitive"
 import { useControllableState } from "@radix-ui/react-use-controllable-state"
 import { format, isValid, parse } from "date-fns"
-import { CalendarIcon, X } from "lucide-react"
 import type { DayPickerSingleProps } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { buttonVariants } from "@/registry/new-york/ui/button"
+import { Calendar } from "@/registry/new-york/ui/calendar"
 import {
   InputBase,
   InputBaseAdornment,
@@ -19,12 +20,12 @@ import {
   InputBaseControl,
   InputBaseFlexWrapper,
   InputBaseInput,
-} from "@/components/ui/input-base"
+} from "@/registry/new-york/ui/input-base"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/registry/new-york/ui/popover"
 
 interface DatePickerProps extends React.ComponentProps<typeof Popover> {
   formatStr?: string
@@ -181,7 +182,7 @@ export const DatePickerInputAdornmentClear = React.forwardRef<
         {...props}
       >
         <span className="sr-only">Clear date</span>
-        <X />
+        <Cross2Icon />
       </InputBaseAdornmentButton>
     </InputBaseAdornment>
   )
@@ -243,7 +244,8 @@ export const DatePickerTrigger = React.forwardRef<
   <InputBase
     asChild
     className={cn(
-      "w-full cursor-pointer items-center hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      buttonVariants({ variant: "outline" }),
+      "cursor-pointer font-normal",
       className
     )}
   >

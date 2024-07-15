@@ -1,42 +1,21 @@
+"use client"
+
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import {
   Controller,
   ControllerProps,
-  Form as F,
   FieldPath,
   FieldValues,
   FormProvider,
   useFormContext,
 } from "react-hook-form"
 
-import { cn, fixedForwardRef } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
+import { Label } from "@/registry/new-york/ui/label"
 
 const Form = FormProvider
-
-interface FormFormProps<TValues extends FieldValues>
-  extends Omit<React.ComponentProps<"form">, "onSubmit"> {
-  onSubmit: (data: TValues) => void
-}
-
-const FormForm = fixedForwardRef(
-  <TValues extends FieldValues>(
-    { onSubmit, ...props }: FormFormProps<TValues>,
-    ref: React.ForwardedRef<HTMLFormElement>
-  ) => {
-    const { control } = useFormContext<TValues>()
-
-    return (
-      <F<TValues>
-        control={control}
-        onSubmit={({ data }) => onSubmit(data)}
-        render={({ submit }) => <form onSubmit={submit} ref={ref} {...props} />}
-      />
-    )
-  }
-)
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -156,7 +135,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-[0.8rem] text-muted-foreground", className)}
       {...props}
     />
   )
@@ -178,7 +157,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm font-medium text-destructive", className)}
+      className={cn("text-[0.8rem] font-medium text-destructive", className)}
       {...props}
     >
       {body}
@@ -190,7 +169,6 @@ FormMessage.displayName = "FormMessage"
 export {
   useFormField,
   Form,
-  FormForm,
   FormItem,
   FormLabel,
   FormControl,

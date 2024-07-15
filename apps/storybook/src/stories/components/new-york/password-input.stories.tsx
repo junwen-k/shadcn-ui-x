@@ -1,11 +1,11 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { LockClosedIcon } from "@radix-ui/react-icons"
 import type { Meta, StoryObj } from "@storybook/react"
-import { Lock } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/registry/new-york/ui/button"
 import {
   Form,
   FormControl,
@@ -13,16 +13,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/registry/new-york/ui/form"
 import {
   PasswordInput,
   PasswordInputAdornment,
   PasswordInputAdornmentRevealToggle,
   PasswordInputControl,
   PasswordInputInput,
-} from "@/components/ui/password-input"
-import { Toaster } from "@/components/ui/toaster"
-import { toast } from "@/components/ui/use-toast"
+} from "@/registry/new-york/ui/password-input"
+import { Toaster } from "@/registry/new-york/ui/toaster"
+import { toast } from "@/registry/new-york/ui/use-toast"
 
 /**
  * Password Input provides a way for the user to securely enter a password, with the ability to toggle the visibility of the password.
@@ -39,12 +39,15 @@ import { toast } from "@/components/ui/use-toast"
  * ```
  */
 const meta = {
-  title: "Components/PasswordInput",
+  title: "Components/new-york/PasswordInput",
   component: PasswordInput,
   render: (args) => (
     <PasswordInput {...args}>
       <PasswordInputControl>
-        <PasswordInputInput placeholder="Password" />
+        <PasswordInputInput
+          autoComplete="new-password"
+          placeholder="Password"
+        />
       </PasswordInputControl>
       <PasswordInputAdornmentRevealToggle />
     </PasswordInput>
@@ -69,10 +72,13 @@ export const WithAdornment = {
   render: (args) => (
     <PasswordInput {...args}>
       <PasswordInputAdornment>
-        <Lock />
+        <LockClosedIcon />
       </PasswordInputAdornment>
       <PasswordInputControl>
-        <PasswordInputInput placeholder="Password" />
+        <PasswordInputInput
+          autoComplete="new-password"
+          placeholder="Password"
+        />
       </PasswordInputControl>
       <PasswordInputAdornmentRevealToggle />
     </PasswordInput>
@@ -127,11 +133,15 @@ function PasswordForm() {
                 onRevealPasswordChange={setRevealPassword}
               >
                 <PasswordInputAdornment>
-                  <Lock />
+                  <LockClosedIcon />
                 </PasswordInputAdornment>
                 <PasswordInputControl>
                   <FormControl>
-                    <PasswordInputInput placeholder="Password" {...field} />
+                    <PasswordInputInput
+                      autoComplete="new-password"
+                      placeholder="Password"
+                      {...field}
+                    />
                   </FormControl>
                 </PasswordInputControl>
                 <PasswordInputAdornmentRevealToggle />
@@ -151,11 +161,12 @@ function PasswordForm() {
                 onRevealPasswordChange={setRevealPassword}
               >
                 <PasswordInputAdornment>
-                  <Lock />
+                  <LockClosedIcon />
                 </PasswordInputAdornment>
                 <PasswordInputControl>
                   <FormControl>
                     <PasswordInputInput
+                      autoComplete="new-password"
                       placeholder="Confirm Password"
                       {...field}
                     />

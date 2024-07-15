@@ -4,7 +4,7 @@ import { fn } from "@storybook/test"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/registry/new-york/ui/button"
 import {
   Form,
   FormControl,
@@ -12,10 +12,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { TagGroup, TagGroupItem } from "@/components/ui/tag-group"
-import { Toaster } from "@/components/ui/toaster"
-import { toast } from "@/components/ui/use-toast"
+} from "@/registry/new-york/ui/form"
+import { TagGroup, TagGroupItem } from "@/registry/new-york/ui/tag-group"
+import { Toaster } from "@/registry/new-york/ui/toaster"
+import { toast } from "@/registry/new-york/ui/use-toast"
 
 /**
  * A tag group is a focusable list of labels, categories, keywords, filters, or other items, with support for keyboard navigation, selection, and removal.
@@ -29,7 +29,7 @@ import { toast } from "@/components/ui/use-toast"
  * ```
  */
 const meta = {
-  title: "Components/TagGroup",
+  title: "Components/new-york/TagGroup",
   component: TagGroup,
   args: {
     type: "multiple",
