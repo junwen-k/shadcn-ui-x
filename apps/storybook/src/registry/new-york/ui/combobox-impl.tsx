@@ -159,9 +159,7 @@ export const Combobox = React.forwardRef<
         <PopoverPrimitive.Root open={open} onOpenChange={setOpen} modal={modal}>
           <CommandPrimitive ref={ref} {...props}>
             {children}
-            {!open && (
-              <CommandPrimitive.List aria-hidden="true" className="hidden" />
-            )}
+            <CommandPrimitive.List aria-hidden="true" hidden />
           </CommandPrimitive>
         </PopoverPrimitive.Root>
       </ComboboxContext.Provider>
@@ -169,10 +167,6 @@ export const Combobox = React.forwardRef<
   }
 )
 Combobox.displayName = "Combobox"
-
-export const ComboboxTrigger = PopoverPrimitive.Trigger
-
-export const ComboboxPopoverAnchor = PopoverPrimitive.Anchor
 
 export const ComboboxInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
@@ -205,14 +199,13 @@ export const ComboboxInput = React.forwardRef<
       required={required}
       value={inputValue}
       onValueChange={(search) => {
+        onOpenChange(true)
         onInputValueChange(search)
         if (!search && type === "single") {
           onValueChange("")
         }
       }}
       onKeyDown={composeEventHandlers(onKeyDown, (event) => {
-        // TODO: check onChange interaction should open
-        onOpenChange(event.key !== "Escape")
         if (type !== "multiple") {
           return
         }
@@ -228,7 +221,7 @@ export const ComboboxInput = React.forwardRef<
       )}
       onFocus={composeEventHandlers(onFocus, () => onOpenChange(true))}
       onBlur={composeEventHandlers(onBlur, (event) => {
-        if (!e.relatedTarget?.hasAttribute("cmdk-list")) {
+        if (!event.relatedTarget?.hasAttribute("cmdk-list")) {
           onInputBlur?.(event)
         }
       })}
@@ -238,6 +231,12 @@ export const ComboboxInput = React.forwardRef<
 })
 ComboboxInput.displayName = "ComboboxInput"
 
+export const ComboboxTrigger = PopoverPrimitive.Trigger
+
+export const ComboboxAnchor = PopoverPrimitive.Anchor
+
+export const ComboboxPortal = PopoverPrimitive.Portal
+
 export const ComboboxContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
@@ -246,6 +245,9 @@ export const ComboboxContent = React.forwardRef<
     asChild
     ref={ref}
     onOpenAutoFocus={composeEventHandlers(onOpenAutoFocus, (event) =>
+      event.preventDefault()
+    )}
+    onCloseAutoFocus={composeEventHandlers(onOpenAutoFocus, (event) =>
       event.preventDefault()
     )}
     onInteractOutside={composeEventHandlers(onInteractOutside, (event) => {
@@ -265,7 +267,7 @@ ComboboxContent.displayName = "ComboboxContent"
 
 export const ComboboxEmpty = CommandPrimitive.Empty
 
-export const ComboboxGroup = CommandPrimitive.Group
+export const ComboboxLoading = CommandPrimitive.Loading
 
 interface ComboboxItemProps
   extends Omit<
@@ -349,3 +351,35 @@ export const ComboboxItemIndicator = React.forwardRef<
 
   return <Primitive.span aria-hidden {...props} ref={ref} />
 })
+
+export const ComboboxGroup = CommandPrimitive.Group
+
+export const ComboboxSeparator = CommandPrimitive.Separator
+
+const Root = Combobox
+const Input = ComboboxInput
+const Trigger = ComboboxTrigger
+const Anchor = ComboboxAnchor
+const Portal = ComboboxPortal
+const Content = ComboboxContent
+const Empty = ComboboxEmpty
+const Loading = ComboboxLoading
+const Item = ComboboxItem
+const ItemIndicator = ComboboxItemIndicator
+const Group = ComboboxGroup
+const Separator = ComboboxSeparator
+
+export {
+  Root,
+  Input,
+  Trigger,
+  Anchor,
+  Portal,
+  Content,
+  Empty,
+  Loading,
+  Item,
+  ItemIndicator,
+  Group,
+  Separator,
+}
