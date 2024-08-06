@@ -157,15 +157,7 @@ export const Combobox = React.forwardRef<
         }
       >
         <PopoverPrimitive.Root open={open} onOpenChange={setOpen} modal={modal}>
-          <CommandPrimitive
-            ref={ref}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                setOpen(true)
-              }
-            }}
-            {...props}
-          >
+          <CommandPrimitive ref={ref} {...props}>
             {children}
             {!open && <CommandPrimitive.List aria-hidden="true" hidden />}
           </CommandPrimitive>
@@ -292,7 +284,8 @@ export const ComboboxInput = React.forwardRef<
         if (!open) {
           onOpenChange(true)
         }
-        onInputValueChange(search)
+        // Schedule input value change to the next tick.
+        setTimeout(() => onInputValueChange(search))
         if (!search && type === "single") {
           onValueChange("")
         }
@@ -424,6 +417,7 @@ export const ComboboxItem = React.forwardRef<
           } else {
             onValueChange(valueProp)
             onInputValueChange(inputValue)
+            // Schedule open change to the next tick.
             setTimeout(() => onOpenChange(false))
           }
         }}
