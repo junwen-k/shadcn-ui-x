@@ -168,6 +168,88 @@ export const Combobox = React.forwardRef<
 )
 Combobox.displayName = "Combobox"
 
+export const ComboboxTagGroup = React.forwardRef<
+  React.ElementRef<typeof RovingFocusGroupPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof RovingFocusGroupPrimitive.Root>
+>((props, ref) => {
+  const { currentTabStopId, onCurrentTabStopIdChange, tagGroupRef, type } =
+    useComboboxContext()
+
+  if (type !== "multiple") {
+    throw new Error(
+      '<ComboboxTagGroup> should only be used when type is "multiple"'
+    )
+  }
+
+  const composedRefs = useComposedRefs(ref, tagGroupRef)
+
+  return (
+    <RovingFocusGroupPrimitive.Root
+      ref={composedRefs}
+      tabIndex={-1}
+      currentTabStopId={currentTabStopId}
+      onCurrentTabStopIdChange={onCurrentTabStopIdChange}
+      onBlur={() => onCurrentTabStopIdChange(null)}
+      {...props}
+    />
+  )
+})
+ComboboxTagGroup.displayName = "ComboboxTagGroup"
+
+interface ComboboxTagGroupItemProps<TValue = string>
+  extends React.ComponentPropsWithoutRef<"div"> {
+  value: TValue
+  disabled?: boolean
+}
+
+export const ComboboxTagGroupItem = <TValue extends string = string>({
+  onClick,
+  onKeyDown,
+  value: valueProp,
+  disabled,
+  ...props
+}: ComboboxTagGroupItemProps<TValue>) => {
+  const { value, onValueChange, inputRef, currentTabStopId, type } =
+    useComboboxContext()
+
+  if (type !== "multiple") {
+    throw new Error(
+      '<ComboboxTagGroupItem> should only be used when type is "multiple"'
+    )
+  }
+
+  const lastItemValue = value.at(-1)
+
+  return (
+    <RovingFocusGroupPrimitive.Item
+      onKeyDown={composeEventHandlers(onKeyDown, (event) => {
+        if (event.key === "Escape") {
+          inputRef.current?.focus()
+        }
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+          event.preventDefault()
+          inputRef.current?.focus()
+        }
+        if (event.key === "ArrowRight" && currentTabStopId === lastItemValue) {
+          inputRef.current?.focus()
+        }
+        if (event.key === "Backspace" || event.key === "Delete") {
+          onValueChange(value.filter((v) => v !== currentTabStopId))
+          inputRef.current?.focus()
+        }
+      })}
+      onClick={composeEventHandlers(
+        onClick,
+        () => disabled && inputRef.current?.focus()
+      )}
+      tabStopId={valueProp}
+      focusable={!disabled}
+      active={valueProp === lastItemValue}
+      {...props}
+    />
+  )
+}
+
 export const ComboboxInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   Omit<
@@ -206,6 +288,10 @@ export const ComboboxInput = React.forwardRef<
         }
       }}
       onKeyDown={composeEventHandlers(onKeyDown, (event) => {
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+          // NOTE: why this break?
+          onOpenChange(true)
+        }
         if (type !== "multiple") {
           return
         }
@@ -358,6 +444,8 @@ export const ComboboxSeparator = CommandPrimitive.Separator
 
 const Root = Combobox
 const Input = ComboboxInput
+const TagGroup = ComboboxTagGroup
+const TagGroupItem = ComboboxTagGroupItem
 const Trigger = ComboboxTrigger
 const Anchor = ComboboxAnchor
 const Portal = ComboboxPortal
@@ -372,6 +460,8 @@ const Separator = ComboboxSeparator
 export {
   Root,
   Input,
+  TagGroup,
+  TagGroupItem,
   Trigger,
   Anchor,
   Portal,
