@@ -157,9 +157,17 @@ export const Combobox = React.forwardRef<
         }
       >
         <PopoverPrimitive.Root open={open} onOpenChange={setOpen} modal={modal}>
-          <CommandPrimitive ref={ref} {...props}>
+          <CommandPrimitive
+            ref={ref}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                setOpen(true)
+              }
+            }}
+            {...props}
+          >
             {children}
-            <CommandPrimitive.List aria-hidden="true" hidden />
+            {!open && <CommandPrimitive.List aria-hidden="true" hidden />}
           </CommandPrimitive>
         </PopoverPrimitive.Root>
       </ComboboxContext.Provider>
@@ -281,7 +289,9 @@ export const ComboboxInput = React.forwardRef<
       required={required}
       value={inputValue}
       onValueChange={(search) => {
-        onOpenChange(true)
+        if (!open) {
+          onOpenChange(true)
+        }
         onInputValueChange(search)
         if (!search && type === "single") {
           onValueChange("")
@@ -289,8 +299,10 @@ export const ComboboxInput = React.forwardRef<
       }}
       onKeyDown={composeEventHandlers(onKeyDown, (event) => {
         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-          // NOTE: why this break?
-          onOpenChange(true)
+          if (!open) {
+            event.preventDefault()
+            onOpenChange(true)
+          }
         }
         if (type !== "multiple") {
           return
@@ -412,8 +424,8 @@ export const ComboboxItem = React.forwardRef<
           } else {
             onValueChange(valueProp)
             onInputValueChange(inputValue)
+            setTimeout(() => onOpenChange(false))
           }
-          setTimeout(() => onOpenChange(type === "multiple"))
         }}
         value={inputValue}
         {...props}
