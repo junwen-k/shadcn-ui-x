@@ -159,7 +159,7 @@ export const Combobox = React.forwardRef<
         <PopoverPrimitive.Root open={open} onOpenChange={setOpen} modal={modal}>
           <CommandPrimitive ref={ref} {...props}>
             {children}
-            {!open && <CommandPrimitive.List aria-hidden="true" hidden />}
+            {!open && <CommandPrimitive.List aria-hidden hidden />}
           </CommandPrimitive>
         </PopoverPrimitive.Root>
       </ComboboxContext.Provider>
@@ -196,19 +196,23 @@ export const ComboboxTagGroup = React.forwardRef<
 })
 ComboboxTagGroup.displayName = "ComboboxTagGroup"
 
-interface ComboboxTagGroupItemProps<TValue = string>
-  extends React.ComponentPropsWithoutRef<"div"> {
-  value: TValue
+interface ComboboxTagGroupItemProps
+  extends React.ComponentPropsWithoutRef<
+    typeof RovingFocusGroupPrimitive.Item
+  > {
+  value: string
   disabled?: boolean
 }
 
-export const ComboboxTagGroupItem = <TValue extends string = string>({
-  onClick,
-  onKeyDown,
-  value: valueProp,
-  disabled,
-  ...props
-}: ComboboxTagGroupItemProps<TValue>) => {
+const ComboboxTagGroupItemContext = React.createContext({ value: "" })
+
+const useComboboxTagGroupItemContext = () =>
+  React.useContext(ComboboxTagGroupItemContext)
+
+export const ComboboxTagGroupItem = React.forwardRef<
+  React.ElementRef<typeof RovingFocusGroupPrimitive.Item>,
+  ComboboxTagGroupItemProps
+>(({ onClick, onKeyDown, value: valueProp, disabled, ...props }) => {
   const { value, onValueChange, inputRef, currentTabStopId, type } =
     useComboboxContext()
 
@@ -221,34 +225,67 @@ export const ComboboxTagGroupItem = <TValue extends string = string>({
   const lastItemValue = value.at(-1)
 
   return (
-    <RovingFocusGroupPrimitive.Item
-      onKeyDown={composeEventHandlers(onKeyDown, (event) => {
-        if (event.key === "Escape") {
-          inputRef.current?.focus()
-        }
-        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-          event.preventDefault()
-          inputRef.current?.focus()
-        }
-        if (event.key === "ArrowRight" && currentTabStopId === lastItemValue) {
-          inputRef.current?.focus()
-        }
-        if (event.key === "Backspace" || event.key === "Delete") {
-          onValueChange(value.filter((v) => v !== currentTabStopId))
-          inputRef.current?.focus()
-        }
-      })}
-      onClick={composeEventHandlers(
-        onClick,
-        () => disabled && inputRef.current?.focus()
+    <ComboboxTagGroupItemContext.Provider value={{ value: valueProp }}>
+      <RovingFocusGroupPrimitive.Item
+        onKeyDown={composeEventHandlers(onKeyDown, (event) => {
+          if (event.key === "Escape") {
+            inputRef.current?.focus()
+          }
+          if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault()
+            inputRef.current?.focus()
+          }
+          if (
+            event.key === "ArrowRight" &&
+            currentTabStopId === lastItemValue
+          ) {
+            inputRef.current?.focus()
+          }
+          if (event.key === "Backspace" || event.key === "Delete") {
+            onValueChange(value.filter((v) => v !== currentTabStopId))
+            inputRef.current?.focus()
+          }
+        })}
+        onClick={composeEventHandlers(
+          onClick,
+          () => disabled && inputRef.current?.focus()
+        )}
+        tabStopId={valueProp}
+        focusable={!disabled}
+        active={valueProp === lastItemValue}
+        {...props}
+      />
+    </ComboboxTagGroupItemContext.Provider>
+  )
+})
+
+export const ComboboxTagGroupItemDelete = React.forwardRef<
+  React.ElementRef<typeof Primitive.button>,
+  React.ComponentPropsWithoutRef<typeof Primitive.button>
+>(({ onClick, ...props }, ref) => {
+  const { value, onValueChange, type } = useComboboxContext()
+
+  if (type !== "multiple") {
+    throw new Error(
+      '<ComboboxTagGroupItemDelete> should only be used when type is "multiple"'
+    )
+  }
+
+  const { value: valueProp } = useComboboxTagGroupItemContext()
+
+  return (
+    <Primitive.button
+      ref={ref}
+      aria-hidden
+      tabIndex={-1}
+      onClick={composeEventHandlers(onClick, () =>
+        onValueChange(value.filter((v) => v !== valueProp))
       )}
-      tabStopId={valueProp}
-      focusable={!disabled}
-      active={valueProp === lastItemValue}
       {...props}
     />
   )
-}
+})
+ComboboxTagGroupItemDelete.displayName = "ComboboxTagGroupItemDelete"
 
 export const ComboboxInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
@@ -414,6 +451,7 @@ export const ComboboxItem = React.forwardRef<
                 ? value.filter((v) => v !== valueProp)
                 : [...value, valueProp]
             )
+            onInputValueChange("")
           } else {
             onValueChange(valueProp)
             onInputValueChange(inputValue)
@@ -452,6 +490,7 @@ const Root = Combobox
 const Input = ComboboxInput
 const TagGroup = ComboboxTagGroup
 const TagGroupItem = ComboboxTagGroupItem
+const TagGroupItemDelete = ComboboxTagGroupItemDelete
 const Trigger = ComboboxTrigger
 const Anchor = ComboboxAnchor
 const Portal = ComboboxPortal
@@ -468,6 +507,7 @@ export {
   Input,
   TagGroup,
   TagGroupItem,
+  TagGroupItemDelete,
   Trigger,
   Anchor,
   Portal,
