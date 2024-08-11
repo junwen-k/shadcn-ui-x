@@ -21,7 +21,7 @@ export const Tag = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      "group inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 data-[state=checked]:border-transparent data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[disabled]:opacity-50 data-[state=checked]:shadow data-[state=checked]:hover:bg-primary/80 data-[disabled]:disabled:pointer-events-none",
+      "group inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 data-[disabled]:pointer-events-none data-[state=checked]:border-transparent data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[disabled]:opacity-50 data-[state=checked]:shadow data-[state=checked]:hover:bg-primary/80",
       onRemove && "gap-1 pr-1.5",
       className
     )}
