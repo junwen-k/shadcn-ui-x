@@ -206,8 +206,12 @@ export const DatePickerInputBaseInput = React.forwardRef<
       <InputBaseInput
         ref={ref}
         value={inputValue}
-        onBlur={composeEventHandlers(onBlur, (e) => {
-          const parsedDate = parse(e.target.value, inputFormatStr, new Date())
+        onBlur={composeEventHandlers(onBlur, (event) => {
+          const parsedDate = parse(
+            event.target.value,
+            inputFormatStr,
+            new Date()
+          )
 
           if (isValid(parsedDate)) {
             onValueChange(parsedDate)
@@ -217,10 +221,14 @@ export const DatePickerInputBaseInput = React.forwardRef<
             onValueChange(null)
           }
         })}
-        onChange={composeEventHandlers(onChange, (e) => {
-          onInputValueChange(e.target.value)
+        onChange={composeEventHandlers(onChange, (event) => {
+          onInputValueChange(event.target.value)
 
-          const parsedDate = parse(e.target.value, inputFormatStr, new Date())
+          const parsedDate = parse(
+            event.target.value,
+            inputFormatStr,
+            new Date()
+          )
 
           if (isValid(parsedDate)) {
             onValueChange(parsedDate)

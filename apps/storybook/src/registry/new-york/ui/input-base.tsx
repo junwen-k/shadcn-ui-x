@@ -49,10 +49,10 @@ export const InputBase = React.forwardRef<
     >
       <Comp
         ref={ref}
-        onClick={composeEventHandlers(onClick, (e) => {
+        onClick={composeEventHandlers(onClick, (event) => {
           // Based on MUI's <InputBase /> implementation.
           // https://github.com/mui/material-ui/blob/next/packages/mui-material/src/InputBase/InputBase.js#L452
-          if (controlRef.current && e.currentTarget === e.target) {
+          if (controlRef.current && event.currentTarget === event.target) {
             controlRef.current.focus()
           }
         })}

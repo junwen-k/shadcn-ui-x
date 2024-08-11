@@ -103,7 +103,8 @@ export const TagGroupItem = React.forwardRef<
   return (
     <ToggleGroupPrimitive.Item asChild ref={ref} value={valueProp} {...props}>
       <Tag
-        selected={selected}
+        checked={selected}
+        data-state={selected ? "checked" : "unchecked"}
         onRemove={
           onRemove &&
           ((_, reason) => {
