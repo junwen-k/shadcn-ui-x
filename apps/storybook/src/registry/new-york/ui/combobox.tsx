@@ -16,8 +16,8 @@ import {
 } from "@/registry/new-york/ui/input-base"
 
 export const Combobox = React.forwardRef<
-  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Root>,
-  React.ElementRef<typeof ComboboxPrimitive.Root>
+  React.ElementRef<typeof ComboboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Root>
 >(({ className, ...props }, ref) => (
   <ComboboxPrimitive.Root
     ref={ref}
@@ -31,8 +31,8 @@ export const Combobox = React.forwardRef<
 Combobox.displayName = "Combobox"
 
 export const ComboboxInput = React.forwardRef<
-  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>,
-  React.ElementRef<typeof ComboboxPrimitive.Input>
+  React.ElementRef<typeof ComboboxPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>
 >((props, ref) => (
   <ComboboxPrimitive.Anchor asChild>
     <InputBase>
@@ -57,8 +57,8 @@ export const ComboboxInput = React.forwardRef<
 ComboboxInput.displayName = "ComboboxInput"
 
 export const ComboboxTagsInput = React.forwardRef<
-  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>,
-  React.ElementRef<typeof ComboboxPrimitive.Input>
+  React.ElementRef<typeof ComboboxPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>
 >(({ children, ...props }, ref) => (
   <ComboboxPrimitive.Anchor asChild>
     <InputBase>
