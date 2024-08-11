@@ -204,7 +204,12 @@ interface ComboboxTagGroupItemProps
   disabled?: boolean
 }
 
-const ComboboxTagGroupItemContext = React.createContext({ value: "" })
+const ComboboxTagGroupItemContext = React.createContext<
+  Pick<ComboboxTagGroupItemProps, "value" | "disabled">
+>({
+  value: "",
+  disabled: false,
+})
 
 const useComboboxTagGroupItemContext = () =>
   React.useContext(ComboboxTagGroupItemContext)
@@ -212,7 +217,7 @@ const useComboboxTagGroupItemContext = () =>
 export const ComboboxTagGroupItem = React.forwardRef<
   React.ElementRef<typeof RovingFocusGroupPrimitive.Item>,
   ComboboxTagGroupItemProps
->(({ onClick, onKeyDown, value: valueProp, disabled, ...props }) => {
+>(({ onClick, onKeyDown, value: valueProp, disabled, ...props }, ref) => {
   const { value, onValueChange, inputRef, currentTabStopId, type } =
     useComboboxContext()
 
@@ -225,8 +230,11 @@ export const ComboboxTagGroupItem = React.forwardRef<
   const lastItemValue = value.at(-1)
 
   return (
-    <ComboboxTagGroupItemContext.Provider value={{ value: valueProp }}>
+    <ComboboxTagGroupItemContext.Provider
+      value={{ value: valueProp, disabled }}
+    >
       <RovingFocusGroupPrimitive.Item
+        ref={ref}
         onKeyDown={composeEventHandlers(onKeyDown, (event) => {
           if (event.key === "Escape") {
             inputRef.current?.focus()
@@ -252,6 +260,7 @@ export const ComboboxTagGroupItem = React.forwardRef<
         )}
         tabStopId={valueProp}
         focusable={!disabled}
+        data-disabled={disabled}
         active={valueProp === lastItemValue}
         {...props}
       />
@@ -259,7 +268,7 @@ export const ComboboxTagGroupItem = React.forwardRef<
   )
 })
 
-export const ComboboxTagGroupItemDelete = React.forwardRef<
+export const ComboboxTagGroupItemRemove = React.forwardRef<
   React.ElementRef<typeof Primitive.button>,
   React.ComponentPropsWithoutRef<typeof Primitive.button>
 >(({ onClick, ...props }, ref) => {
@@ -267,17 +276,18 @@ export const ComboboxTagGroupItemDelete = React.forwardRef<
 
   if (type !== "multiple") {
     throw new Error(
-      '<ComboboxTagGroupItemDelete> should only be used when type is "multiple"'
+      '<ComboboxTagGroupItemRemove> should only be used when type is "multiple"'
     )
   }
 
-  const { value: valueProp } = useComboboxTagGroupItemContext()
+  const { value: valueProp, disabled } = useComboboxTagGroupItemContext()
 
   return (
     <Primitive.button
       ref={ref}
       aria-hidden
       tabIndex={-1}
+      disabled={disabled}
       onClick={composeEventHandlers(onClick, () =>
         onValueChange(value.filter((v) => v !== valueProp))
       )}
@@ -285,7 +295,7 @@ export const ComboboxTagGroupItemDelete = React.forwardRef<
     />
   )
 })
-ComboboxTagGroupItemDelete.displayName = "ComboboxTagGroupItemDelete"
+ComboboxTagGroupItemRemove.displayName = "ComboboxTagGroupItemRemove"
 
 export const ComboboxInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
@@ -358,6 +368,29 @@ export const ComboboxInput = React.forwardRef<
   )
 })
 ComboboxInput.displayName = "ComboboxInput"
+
+export const ComboboxClear = React.forwardRef<
+  React.ElementRef<typeof Primitive.button>,
+  React.ComponentPropsWithoutRef<typeof Primitive.button>
+>(({ onClick, ...props }, ref) => {
+  const { value, onValueChange, inputValue, onInputValueChange, type } =
+    useComboboxContext()
+
+  const isValueEmpty = type === "single" ? !value : !value.length
+
+  return (
+    <Primitive.button
+      ref={ref}
+      disabled={isValueEmpty && !inputValue}
+      onClick={composeEventHandlers(onClick, () => {
+        onValueChange(type === "single" ? "" : [])
+        onInputValueChange("")
+      })}
+      {...props}
+    />
+  )
+})
+ComboboxClear.displayName = "ComboboxClear"
 
 export const ComboboxTrigger = PopoverPrimitive.Trigger
 
@@ -487,10 +520,11 @@ export const ComboboxGroup = CommandPrimitive.Group
 export const ComboboxSeparator = CommandPrimitive.Separator
 
 const Root = Combobox
-const Input = ComboboxInput
 const TagGroup = ComboboxTagGroup
 const TagGroupItem = ComboboxTagGroupItem
-const TagGroupItemDelete = ComboboxTagGroupItemDelete
+const TagGroupItemRemove = ComboboxTagGroupItemRemove
+const Input = ComboboxInput
+const Clear = ComboboxClear
 const Trigger = ComboboxTrigger
 const Anchor = ComboboxAnchor
 const Portal = ComboboxPortal
@@ -504,10 +538,11 @@ const Separator = ComboboxSeparator
 
 export {
   Root,
-  Input,
   TagGroup,
   TagGroupItem,
-  TagGroupItemDelete,
+  TagGroupItemRemove,
+  Input,
+  Clear,
   Trigger,
   Anchor,
   Portal,
