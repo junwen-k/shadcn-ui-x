@@ -55,8 +55,6 @@ const ComboboxContext = React.createContext<ComboboxContextProps>({
 
 export const useComboboxContext = () => React.useContext(ComboboxContext)
 
-type ComboboxProps = ComboboxSingleProps | ComboboxMultipleProps
-
 interface ComboboxBaseProps
   extends React.ComponentProps<typeof PopoverPrimitive.Root>,
     Omit<
@@ -71,27 +69,21 @@ interface ComboboxBaseProps
   required?: boolean
 }
 
-interface ComboboxSingleProps extends ComboboxBaseProps {
-  type: "single"
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
+type ComboboxValue<T extends "single" | "multiple" = "single"> =
+  T extends "single" ? string : T extends "multiple" ? string[] : never
+
+interface ComboboxProps<T extends "single" | "multiple" = "single">
+  extends ComboboxBaseProps {
+  type?: T
+  value?: ComboboxValue<T>
+  defaultValue?: ComboboxValue<T>
+  onValueChange?: (value: ComboboxValue<T>) => void
 }
 
-interface ComboboxMultipleProps extends ComboboxBaseProps {
-  type: "multiple"
-  value?: string[]
-  defaultValue?: string[]
-  onValueChange?: (value: string[]) => void
-}
-
-export const Combobox = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive>,
-  ComboboxProps
->(
-  (
+export const Combobox = React.forwardRef(
+  <T extends "single" | "multiple" = "single">(
     {
-      type = "single",
+      type = "single" as T,
       open: openProp,
       onOpenChange,
       defaultOpen,
@@ -107,11 +99,11 @@ export const Combobox = React.forwardRef<
       disabled,
       required,
       ...props
-    },
-    ref
+    }: ComboboxProps<T>,
+    ref: React.ForwardedRef<React.ElementRef<typeof CommandPrimitive>>
   ) => {
     const [value = type === "multiple" ? [] : "", setValue] =
-      useControllableState({
+      useControllableState<ComboboxValue<T>>({
         prop: valueProp,
         defaultProp: defaultValue,
         onChange: onValueChange,
@@ -383,7 +375,11 @@ export const ComboboxClear = React.forwardRef<
       ref={ref}
       disabled={isValueEmpty && !inputValue}
       onClick={composeEventHandlers(onClick, () => {
-        onValueChange(type === "single" ? "" : [])
+        if (type === "single") {
+          onValueChange("")
+        } else {
+          onValueChange([])
+        }
         onInputValueChange("")
       })}
       {...props}
