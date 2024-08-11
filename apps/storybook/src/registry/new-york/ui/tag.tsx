@@ -38,7 +38,7 @@ export const Tag = React.forwardRef<
     <Slottable>{children}</Slottable>
     {onRemove && (
       <div
-        aria-hidden="true"
+        aria-hidden
         onClick={(event) => {
           event.stopPropagation()
           onRemove(event, "closeClick")
