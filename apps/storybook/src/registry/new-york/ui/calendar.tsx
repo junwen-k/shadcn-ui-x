@@ -22,6 +22,7 @@ import {
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 function Calendar({
+  captionLayout = "label",
   className,
   classNames,
   showOutsideDays = true,
@@ -30,6 +31,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      captionLayout={captionLayout}
       className={cn("p-3", className)}
       classNames={{
         button_next: cn(
@@ -47,12 +49,15 @@ function Calendar({
         ),
         day: "rounded-md p-0 text-center text-sm aria-selected:bg-accent",
         disabled: "*:text-muted-foreground *:opacity-50",
-        dropdown_root: "first:basis-3/5 last:flex-1",
+        dropdown: "first:basis-3/5 last:basis-2/5",
         dropdowns: "flex basis-full items-center gap-2",
         hidden: "invisible",
         month_caption: "flex items-center justify-center pt-1",
         month_grid: "w-full border-collapse space-y-1",
-        month: "space-y-4",
+        month: cn(
+          "space-y-4",
+          captionLayout !== "label" && !props.hideNavigation && "mt-9"
+        ),
         months:
           "relative flex flex-col gap-y-4 sm:flex-row sm:gap-x-4 sm:gap-y-0",
         nav: "absolute flex w-full items-center justify-between space-x-1",
@@ -93,35 +98,35 @@ function Calendar({
           options,
           classNames,
           className,
-          ...props
-        }) => {
-          console.log(props)
-          return (
-            <Select
-              disabled={disabled}
-              value={`${value}`}
-              onValueChange={(value) =>
-                onChange?.({
-                  target: { value },
-                } as React.ChangeEvent<HTMLSelectElement>)
-              }
+        }) => (
+          <Select
+            disabled={disabled}
+            value={`${value}`}
+            onValueChange={(value) =>
+              onChange?.({
+                target: { value },
+              } as React.ChangeEvent<HTMLSelectElement>)
+            }
+          >
+            <SelectTrigger
+              aria-label={ariaLabel}
+              className={cn(classNames[UI.Dropdown], className)}
             >
-              <SelectTrigger
-                aria-label={ariaLabel}
-                className={cn(classNames[UI.DropdownRoot], className)}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {options?.map((option) => (
-                  <SelectItem key={option.value} value={`${option.value}`}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )
-        },
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {options?.map((option) => (
+                <SelectItem
+                  key={option.value}
+                  value={`${option.value}`}
+                  disabled={option.disabled}
+                >
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ),
       }}
       {...props}
     />
