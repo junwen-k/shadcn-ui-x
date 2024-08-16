@@ -50,7 +50,7 @@ function Calendar({
         day: "rounded-md p-0 text-center text-sm aria-selected:bg-accent",
         disabled: "*:text-muted-foreground *:opacity-50",
         dropdown: "first:basis-3/5 last:basis-2/5",
-        dropdowns: "text-sm font-medium flex basis-full items-center gap-2",
+        dropdowns: "flex basis-full items-center gap-2 text-sm font-medium",
         hidden: "invisible",
         month_caption: "flex items-center justify-center pt-1",
         month_grid: "w-full border-collapse space-y-1",
@@ -65,7 +65,7 @@ function Calendar({
           "*:text-muted-foreground *:opacity-50 *:aria-selected:bg-accent/50 *:aria-selected:text-muted-foreground *:aria-selected:opacity-30",
         range_end: "rounded-l-none",
         range_middle:
-          "first:rounded-l-md last:rounded-r-md rounded-none *:aria-selected:bg-accent *:aria-selected:text-accent-foreground",
+          "rounded-none first:rounded-l-md last:rounded-r-md *:aria-selected:bg-accent *:aria-selected:text-accent-foreground",
         range_start: "rounded-r-none",
         selected:
           "*:bg-primary *:text-primary-foreground *:hover:bg-primary *:hover:text-primary-foreground *:focus:bg-primary *:focus:text-primary-foreground",
