@@ -11,6 +11,16 @@ import { DayPicker } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/registry/new-york/ui/button"
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/registry/new-york/ui/select"
+
+import { NativeSelect } from "@/registry/new-york/ui/native-select"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
@@ -33,13 +43,16 @@ function Calendar({
           buttonVariants({ variant: "outline" }),
           "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium aria-hidden:hidden",
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
           "size-8 font-normal"
         ),
         day: "rounded-md p-0 text-center text-sm aria-selected:bg-accent",
         disabled: "*:text-muted-foreground *:opacity-50",
+        dropdown_root: "first:basis-3/5 last:flex-1",
+        dropdown: "min-w-0 py-0",
+        dropdowns: "flex basis-full items-center gap-2",
         hidden: "invisible",
         month_caption: "flex items-center justify-center pt-1",
         month_grid: "w-full border-collapse space-y-1",
@@ -76,6 +89,7 @@ function Calendar({
               return <ChevronRightIcon className="size-4" />
           }
         },
+        Select: (props) => <NativeSelect {...props} />,
       }}
       {...props}
     />
