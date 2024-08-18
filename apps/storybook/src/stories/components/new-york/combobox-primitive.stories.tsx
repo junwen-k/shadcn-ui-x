@@ -1,7 +1,7 @@
 import React from "react"
 import type { Meta, StoryObj } from "@storybook/react"
 
-import * as ComboboxPrimitive from "@/registry/new-york/ui/combobox-impl"
+import * as ComboboxPrimitive from "@/registry/new-york/ui/combobox-primitive"
 
 const fruits = [
   {

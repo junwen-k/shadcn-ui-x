@@ -6,7 +6,7 @@ import { Slottable } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
 import { badgeVariants } from "@/registry/new-york/ui/badge"
-import * as ComboboxPrimitive from "@/registry/new-york/ui/combobox-impl"
+import * as ComboboxPrimitive from "@/registry/new-york/ui/combobox-primitive"
 import {
   InputBase,
   InputBaseAdornmentButton,
