@@ -1,18 +1,12 @@
 "use client"
 
 import React from "react"
-import { composeEventHandlers } from "@radix-ui/primitive"
 import { CalendarIcon, Cross2Icon } from "@radix-ui/react-icons"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
-import { Primitive } from "@radix-ui/react-primitive"
-import type * as Radix from "@radix-ui/react-primitive"
-import { useControllableState } from "@radix-ui/react-use-controllable-state"
-import { format, isValid, parse } from "date-fns"
-import type { DayPickerSingleProps } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/registry/new-york/ui/button"
 import { Calendar } from "@/registry/new-york/ui/calendar"
+import * as DatePickerPrimitive from "@/registry/new-york/ui/date-picker-impl"
 import {
   InputBase,
   InputBaseAdornment,
@@ -21,233 +15,55 @@ import {
   InputBaseFlexWrapper,
   InputBaseInput,
 } from "@/registry/new-york/ui/input-base"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/new-york/ui/popover"
 
-interface DatePickerProps extends React.ComponentProps<typeof Popover> {
-  formatStr?: string
-  inputFormatStr?: string
-  month?: Date
-  defaultMonth?: Date
-  onMonthChange?: (month: Date) => void
-  value?: Date | null
-  defaultValue?: Date
-  onValueChange?: (value: Date | null) => void
-  inputValue?: string
-  defaultInputValue?: string
-  onInputValueChange?: (inputValue: string) => void
-  disabled?: boolean
-  required?: boolean
-}
+export const DatePicker = DatePickerPrimitive.Root
 
-const DatePickerContext = React.createContext<
-  Pick<
-    DatePickerProps,
-    "month" | "value" | "disabled" | "required" | "inputValue"
-  > &
-    Required<
-      Pick<
-        DatePickerProps,
-        | "formatStr"
-        | "inputFormatStr"
-        | "onMonthChange"
-        | "onValueChange"
-        | "onInputValueChange"
-      >
-    >
->({
-  formatStr: "PPP",
-  inputFormatStr: "yyyy-MM-dd",
-  month: undefined,
-  onMonthChange: () => {},
-  value: undefined,
-  onValueChange: () => {},
-  inputValue: "",
-  onInputValueChange: () => {},
-  disabled: false,
-  required: false,
-})
+export const DatePickerAnchor = DatePickerPrimitive.Anchor
 
-export const useDatePickerContext = () => React.useContext(DatePickerContext)
-
-export const DatePicker = ({
-  formatStr = "PPP",
-  inputFormatStr = "yyyy-MM-dd",
-  open,
-  onOpenChange,
-  defaultOpen,
-  modal,
-  children,
-  month: monthProp,
-  defaultMonth,
-  onMonthChange,
-  value: valueProp,
-  defaultValue,
-  onValueChange,
-  inputValue: inputValueProp,
-  defaultInputValue,
-  onInputValueChange,
-  disabled,
-  required,
-}: DatePickerProps) => {
-  // Use `null` as empty value when in controlled mode.
-  const [value, setValue] = useControllableState<Date | null>({
-    prop: valueProp,
-    defaultProp: defaultValue,
-    onChange: onValueChange,
-  })
-  const [inputValue = "", setInputValue] = useControllableState({
-    prop: inputValueProp,
-    defaultProp: defaultInputValue,
-    onChange: onInputValueChange,
-  })
-  const [month, setMonth] = useControllableState({
-    prop: monthProp,
-    defaultProp: defaultMonth,
-    onChange: onMonthChange,
-  })
-
-  return (
-    <DatePickerContext.Provider
-      value={{
-        formatStr,
-        inputFormatStr,
-        month,
-        onMonthChange: setMonth,
-        value,
-        onValueChange: setValue,
-        inputValue,
-        onInputValueChange: setInputValue,
-        disabled,
-        required,
-      }}
-    >
-      <Popover
-        open={open}
-        onOpenChange={onOpenChange}
-        defaultOpen={defaultOpen}
-        modal={modal}
-      >
-        {children}
-      </Popover>
-    </DatePickerContext.Provider>
-  )
-}
-
-export const DatePickerAnchor = PopoverPrimitive.Anchor
+const DatePickerInputBase = React.forwardRef<
+  React.ElementRef<typeof InputBase>,
+  React.ComponentPropsWithoutRef<typeof InputBase>
+>(({ children, ...props }, ref) => (
+  <DatePickerAnchor>
+    <InputBase ref={ref} {...props}>
+      {children}
+      <InputBaseAdornment>
+        <InputBaseAdornmentButton asChild>
+          <DatePickerPrimitive.Clear>
+            <span className="sr-only">Clear date</span>
+            <Cross2Icon />
+          </DatePickerPrimitive.Clear>
+        </InputBaseAdornmentButton>
+      </InputBaseAdornment>
+      <InputBaseAdornment>
+        <InputBaseAdornmentButton asChild>
+          <DatePickerPrimitive.Trigger>
+            <CalendarIcon />
+          </DatePickerPrimitive.Trigger>
+        </InputBaseAdornmentButton>
+      </InputBaseAdornment>
+    </InputBase>
+  </DatePickerAnchor>
+))
+DatePickerInputBase.displayName = "DatePickerInputBase"
 
 export const DatePickerInput = React.forwardRef<
-  React.ElementRef<typeof InputBase>,
-  Omit<React.ComponentPropsWithoutRef<typeof InputBase>, "children">
->((props, ref) => {
-  const { required } = useDatePickerContext()
-
-  return (
-    <DatePickerAnchor>
-      <InputBase ref={ref} {...props}>
-        <DatePickerInputBaseInput />
-        {!required && <DatePickerInputAdornmentClear />}
-        <InputBaseAdornment>
-          <InputBaseAdornmentButton asChild>
-            <PopoverTrigger>
-              <CalendarIcon />
-            </PopoverTrigger>
-          </InputBaseAdornmentButton>
-        </InputBaseAdornment>
-      </InputBase>
-    </DatePickerAnchor>
-  )
-})
-DatePickerInput.displayName = "DatePickerInput"
-
-export const DatePickerInputAdornmentClear = React.forwardRef<
-  React.ElementRef<typeof InputBaseAdornmentButton>,
-  React.ComponentPropsWithoutRef<typeof InputBaseAdornmentButton>
->(({ onClick, ...props }, ref) => {
-  const { value, inputValue, onValueChange, onInputValueChange } =
-    useDatePickerContext()
-
-  return (
-    <InputBaseAdornment>
-      <InputBaseAdornmentButton
-        ref={ref}
-        disabled={!value && !inputValue}
-        onClick={composeEventHandlers(onClick, () => {
-          onValueChange(null)
-          onInputValueChange("")
-        })}
-        {...props}
-      >
-        <span className="sr-only">Clear date</span>
-        <Cross2Icon />
-      </InputBaseAdornmentButton>
-    </InputBaseAdornment>
-  )
-})
-DatePickerInputAdornmentClear.displayName = "DatePickerInputAdornmentClear"
-
-export const DatePickerInputBaseInput = React.forwardRef<
   React.ElementRef<typeof InputBaseInput>,
   React.ComponentPropsWithoutRef<typeof InputBaseInput>
->(({ onChange, onBlur, ...props }, ref) => {
-  const {
-    inputFormatStr,
-    onMonthChange,
-    inputValue,
-    onInputValueChange,
-    onValueChange,
-  } = useDatePickerContext()
-
-  return (
+>((props, ref) => (
+  <DatePickerInputBase>
     <InputBaseControl>
-      <InputBaseInput
-        ref={ref}
-        value={inputValue}
-        onBlur={composeEventHandlers(onBlur, (event) => {
-          const parsedDate = parse(
-            event.target.value,
-            inputFormatStr,
-            new Date()
-          )
-
-          if (isValid(parsedDate)) {
-            onValueChange(parsedDate)
-            onMonthChange(parsedDate)
-          } else {
-            onInputValueChange("")
-            onValueChange(null)
-          }
-        })}
-        onChange={composeEventHandlers(onChange, (event) => {
-          onInputValueChange(event.target.value)
-
-          const parsedDate = parse(
-            event.target.value,
-            inputFormatStr,
-            new Date()
-          )
-
-          if (isValid(parsedDate)) {
-            onValueChange(parsedDate)
-            onMonthChange(parsedDate)
-          } else {
-            onValueChange(null)
-          }
-        })}
-        placeholder={inputFormatStr}
-        {...props}
-      />
+      <DatePickerPrimitive.Input asChild>
+        <InputBaseInput ref={ref} {...props} />
+      </DatePickerPrimitive.Input>
     </InputBaseControl>
-  )
-})
-DatePickerInputBaseInput.displayName = "DatePickerInputBaseInput"
+  </DatePickerInputBase>
+))
+DatePickerInput.displayName = "DatePickerInput"
 
 export const DatePickerTrigger = React.forwardRef<
-  React.ElementRef<typeof PopoverTrigger>,
-  React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+  React.ElementRef<typeof DatePickerPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof DatePickerPrimitive.Trigger>
 >(({ children, className, ...props }, ref) => (
   <InputBase
     asChild
@@ -257,88 +73,53 @@ export const DatePickerTrigger = React.forwardRef<
       className
     )}
   >
-    <PopoverTrigger ref={ref} {...props}>
+    <DatePickerPrimitive.Trigger ref={ref} {...props}>
       <InputBaseFlexWrapper>{children}</InputBaseFlexWrapper>
       <InputBaseAdornment>
         <CalendarIcon />
       </InputBaseAdornment>
-    </PopoverTrigger>
+    </DatePickerPrimitive.Trigger>
   </InputBase>
 ))
 DatePickerTrigger.displayName = "DatePickerTrigger"
 
-interface DatePickerValueProps
-  extends Radix.PrimitivePropsWithRef<typeof Primitive.span> {
-  placeholder?: React.ReactNode
-}
-
 export const DatePickerValue = React.forwardRef<
-  React.ElementRef<typeof Primitive.span>,
-  DatePickerValueProps
->(({ placeholder, children, className, ...props }, ref) => {
-  const { formatStr, value } = useDatePickerContext()
-
-  return (
-    <Primitive.span
-      ref={ref}
-      className={cn(!value && "text-muted-foreground/40", className)}
-      {...props}
-    >
-      {!value ? placeholder : children ?? format(value, formatStr)}
-    </Primitive.span>
-  )
-})
+  React.ElementRef<typeof DatePickerPrimitive.Value>,
+  React.ComponentPropsWithoutRef<typeof DatePickerPrimitive.Value>
+>(({ className, ...props }, ref) => (
+  <DatePickerPrimitive.Value
+    ref={ref}
+    className={cn("data-[placeholder]:text-muted-foreground/40", className)}
+    {...props}
+  />
+))
 DatePickerValue.displayName = "DatePickerValue"
 
 export const DatePickerContent = React.forwardRef<
-  React.ElementRef<typeof PopoverContent>,
-  React.ComponentPropsWithoutRef<typeof PopoverContent>
->(({ align = "start", className, ...props }, ref) => (
-  <PopoverContent
-    ref={ref}
-    align={align}
-    className={cn("w-auto p-0", className)}
-    {...props}
-  />
+  React.ElementRef<typeof DatePickerPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DatePickerPrimitive.Content>
+>(({ className, align = "start", alignOffset = 4, ...props }, ref) => (
+  <DatePickerPrimitive.Portal>
+    <DatePickerPrimitive.Content
+      ref={ref}
+      align={align}
+      alignOffset={alignOffset}
+      className={cn(
+        "relative z-50 max-h-96 w-auto overflow-hidden rounded-md border bg-popover p-0 text-popover-foreground shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className
+      )}
+      {...props}
+    />
+  </DatePickerPrimitive.Portal>
 ))
 DatePickerContent.displayName = "DatePickerContent"
 
 export const DatePickerCalendar = React.forwardRef<
-  React.ElementRef<typeof Calendar>,
-  Omit<DayPickerSingleProps, "mode">
->(({ initialFocus = true, ...props }, ref) => {
-  const {
-    inputFormatStr,
-    month,
-    onMonthChange,
-    value,
-    onValueChange,
-    onInputValueChange,
-    disabled,
-    required,
-  } = useDatePickerContext()
-
-  return (
-    <Calendar
-      ref={ref}
-      mode="single"
-      selected={value === null ? undefined : value}
-      onSelect={(date) => {
-        if (!date) {
-          onValueChange(null)
-          onInputValueChange("")
-        } else {
-          onValueChange(date)
-          onInputValueChange(format(date, inputFormatStr))
-        }
-      }}
-      month={month}
-      onMonthChange={onMonthChange}
-      disabled={disabled}
-      required={required}
-      initialFocus={initialFocus}
-      {...props}
-    />
-  )
-})
+  React.ElementRef<typeof DatePickerPrimitive.Calendar>,
+  React.ComponentPropsWithoutRef<typeof DatePickerPrimitive.Calendar>
+>((props, ref) => (
+  <DatePickerPrimitive.Calendar asChild>
+    <Calendar ref={ref} {...props} />
+  </DatePickerPrimitive.Calendar>
+))
 DatePickerCalendar.displayName = "DatePickerCalendar"

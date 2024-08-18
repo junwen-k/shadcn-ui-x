@@ -72,6 +72,12 @@ type Story = StoryObj<typeof meta>
 
 export const Trigger = {} satisfies Story
 
+export const Required = {
+  args: {
+    required: true,
+  },
+} satisfies Story
+
 export const Input = {
   render: (args) => (
     <DatePicker {...args}>
