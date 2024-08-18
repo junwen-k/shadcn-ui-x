@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import {
   Dropzone,
   DropzoneInput,
@@ -7,8 +9,10 @@ import {
   DropzoneZoneTitle,
 } from "@/registry/new-york/ui/dropzone"
 
-export const DropzoneDefaultExample = () => (
-  <Dropzone>
+export const DropzoneDefaultExample = (
+  props: React.ComponentProps<typeof Dropzone>
+) => (
+  <Dropzone {...props}>
     <DropzoneZone>
       <DropzoneInput />
       <div className="flex flex-col items-center gap-4 text-center">

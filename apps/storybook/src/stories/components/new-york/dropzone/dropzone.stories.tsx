@@ -24,6 +24,9 @@ import { DropzoneTriggerExample } from "./dropzone-trigger-example"
  * <Dropzone.Root>
  *  <Dropzone.Zone>
  *    <Dropzone.Input />
+ *    <Dropzone.DropzoneZoneIcon />
+ *    <Dropzone.DropzoneZoneTitle />
+ *    <Dropzone.DropzoneZoneDescription />
  *  </Dropzone.Zone>
  *
  *  <Dropzone.Trigger />
@@ -41,6 +44,7 @@ const meta = {
     DropzoneZoneIcon,
     DropzoneZoneTitle,
   } as any,
+  args: {},
   render: DropzoneDefaultExample,
   parameters: {
     layout: "centered",
@@ -51,22 +55,22 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default = {
+  args: {},
+} satisfies Story
+
+export const Disabled = {
   args: {
-    children: "",
+    disabled: true,
   },
 } satisfies Story
 
 export const Trigger = {
-  args: {
-    children: "",
-  },
+  args: {},
   render: DropzoneTriggerExample,
 } satisfies Story
 
 export const WithForm = {
-  args: {
-    children: "",
-  },
+  args: {},
   decorators: [
     (Story) => (
       <>
