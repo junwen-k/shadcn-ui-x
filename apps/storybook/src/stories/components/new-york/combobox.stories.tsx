@@ -11,6 +11,8 @@ import {
   ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
+  ComboboxTag,
+  ComboboxTagsInput,
 } from "@/registry/new-york/ui/combobox"
 import {
   Form,
@@ -23,15 +25,56 @@ import {
 import { Toaster } from "@/registry/new-york/ui/toaster"
 import { toast } from "@/registry/new-york/ui/use-toast"
 
+const fruits = [
+  {
+    value: "apple",
+    label: "Apple",
+  },
+  {
+    value: "banana",
+    label: "Banana",
+  },
+  {
+    value: "blueberry",
+    label: "Blueberry",
+  },
+  {
+    value: "grapes",
+    label: "Grapes",
+  },
+  {
+    value: "pineapple",
+    label: "Pineapple",
+  },
+]
+
 /**
  * Combobox element.
  *
  * ### Anatomy
  *
  * ```tsx
- * <Combobox>
- *  <ComboboxInput />
- * </Combobox>
+ * <Combobox.Root>
+ *
+ *   <Combobox.ComboboxTagsInput>
+ *     <Combobox.ComboboxTag />
+ *   </Combobox.ComboboxTagsInput>
+ *
+ *   <Combobox.Input />
+ *
+ *   <Combobox.Content>
+ *     <Combobox.Empty />
+ *     <Combobox.Loading />
+ *
+ *     <Combobox.Item />
+ *
+ *     <Combobox.Group>
+ *       <Combobox.Item />
+ *     </Combobox.Group>
+ *
+ *     <Combobox.Separator />
+ *   </Combobox.Content>
+ * </Combobox.Root>
  * ```
  */
 const meta = {
@@ -63,14 +106,14 @@ type Story = StoryObj<typeof meta>
 export const Default = {} satisfies Story
 
 const FormSchema = z.object({
-  fruit: z.string(),
+  fruit: z.string().array(),
 })
 
-function DatePickerForm() {
+function ComboboxForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      fruit: "",
+      fruit: [],
     },
   })
 
@@ -94,20 +137,32 @@ function DatePickerForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Fruit</FormLabel>
-              <Combobox value={field.value} onValueChange={field.onChange}>
+              <Combobox
+                type="multiple"
+                value={field.value}
+                onValueChange={field.onChange}
+              >
                 <FormControl>
-                  <ComboboxInput
+                  <ComboboxTagsInput
                     className="w-[280px]"
                     placeholder="Search fruit..."
-                  />
+                  >
+                    {field.value.map((value) => (
+                      <ComboboxTag key={value} value={value}>
+                        {fruits.find((fruit) => fruit.value === value)?.label}
+                      </ComboboxTag>
+                    ))}
+                  </ComboboxTagsInput>
                 </FormControl>
                 <ComboboxContent>
                   <ComboboxEmpty>No fruit found.</ComboboxEmpty>
-                  <ComboboxItem value="apple">Apple</ComboboxItem>
-                  <ComboboxItem value="banana">Banana</ComboboxItem>
-                  <ComboboxItem value="blueberry">Blueberry</ComboboxItem>
-                  <ComboboxItem value="grapes">Grapes</ComboboxItem>
-                  <ComboboxItem value="pineapple">Pineapple</ComboboxItem>
+                  <ComboboxGroup heading="Fruits">
+                    {fruits.map((fruit) => (
+                      <ComboboxItem key={fruit.value} value={fruit.value}>
+                        {fruit.label}
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxGroup>
                 </ComboboxContent>
               </Combobox>
               <FormMessage />
@@ -129,5 +184,5 @@ export const WithForm = {
       </>
     ),
   ],
-  render: DatePickerForm,
+  render: ComboboxForm,
 } satisfies Story

@@ -30,17 +30,13 @@ export const Combobox = React.forwardRef<
 ))
 Combobox.displayName = "Combobox"
 
-export const ComboboxInput = React.forwardRef<
-  React.ElementRef<typeof ComboboxPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>
->((props, ref) => (
+const ComboboxInputBase = React.forwardRef<
+  React.ElementRef<typeof InputBase>,
+  React.ComponentPropsWithoutRef<typeof InputBase>
+>(({ children, ...props }, ref) => (
   <ComboboxPrimitive.Anchor asChild>
-    <InputBase>
-      <InputBaseControl>
-        <ComboboxPrimitive.Input asChild>
-          <InputBaseInput ref={ref} {...props} />
-        </ComboboxPrimitive.Input>
-      </InputBaseControl>
+    <InputBase ref={ref} {...props}>
+      {children}
       <ComboboxPrimitive.Clear asChild>
         <InputBaseAdornmentButton>
           <Cross2Icon />
@@ -54,36 +50,38 @@ export const ComboboxInput = React.forwardRef<
     </InputBase>
   </ComboboxPrimitive.Anchor>
 ))
+ComboboxInputBase.displayName = "ComboboxInputBase"
+
+export const ComboboxInput = React.forwardRef<
+  React.ElementRef<typeof ComboboxPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>
+>((props, ref) => (
+  <ComboboxInputBase>
+    <InputBaseControl>
+      <ComboboxPrimitive.Input asChild>
+        <InputBaseInput ref={ref} {...props} />
+      </ComboboxPrimitive.Input>
+    </InputBaseControl>
+  </ComboboxInputBase>
+))
 ComboboxInput.displayName = "ComboboxInput"
 
 export const ComboboxTagsInput = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Input>
 >(({ children, ...props }, ref) => (
-  <ComboboxPrimitive.Anchor asChild>
-    <InputBase>
-      <ComboboxPrimitive.ComboboxTagGroup asChild>
-        <InputBaseFlexWrapper className="flex items-center gap-2">
-          {children}
-          <InputBaseControl>
-            <ComboboxPrimitive.Input asChild>
-              <InputBaseInput ref={ref} {...props} />
-            </ComboboxPrimitive.Input>
-          </InputBaseControl>
-        </InputBaseFlexWrapper>
-      </ComboboxPrimitive.ComboboxTagGroup>
-      <ComboboxPrimitive.Clear asChild>
-        <InputBaseAdornmentButton>
-          <Cross2Icon />
-        </InputBaseAdornmentButton>
-      </ComboboxPrimitive.Clear>
-      <ComboboxPrimitive.Trigger asChild>
-        <InputBaseAdornmentButton>
-          <CaretSortIcon />
-        </InputBaseAdornmentButton>
-      </ComboboxPrimitive.Trigger>
-    </InputBase>
-  </ComboboxPrimitive.Anchor>
+  <ComboboxInputBase>
+    <ComboboxPrimitive.ComboboxTagGroup asChild>
+      <InputBaseFlexWrapper className="flex items-center gap-2">
+        {children}
+        <InputBaseControl>
+          <ComboboxPrimitive.Input asChild>
+            <InputBaseInput ref={ref} {...props} />
+          </ComboboxPrimitive.Input>
+        </InputBaseControl>
+      </InputBaseFlexWrapper>
+    </ComboboxPrimitive.ComboboxTagGroup>
+  </ComboboxInputBase>
 ))
 ComboboxTagsInput.displayName = "ComboboxTagsInput"
 
