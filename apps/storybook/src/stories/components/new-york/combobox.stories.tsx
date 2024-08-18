@@ -108,7 +108,10 @@ export const Default = {
 } satisfies Story
 
 const FormSchema = z.object({
-  fruit: z.string().array(),
+  fruit: z
+    .string()
+    .array()
+    .min(1, { message: "Please select at least 1 fruit" }),
 })
 
 function ComboboxForm() {
