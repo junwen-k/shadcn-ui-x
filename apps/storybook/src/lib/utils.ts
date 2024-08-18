@@ -11,7 +11,9 @@ export function cn(...inputs: ClassValue[]) {
 export function fixedForwardRef<T, P = {}>(
   render: (props: P, ref: React.Ref<T>) => React.ReactNode
 ): (props: P & React.RefAttributes<T>) => React.ReactNode {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return React.forwardRef(render) as any
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type InferTuple<T extends ReadonlyArray<any>> = [...T]
