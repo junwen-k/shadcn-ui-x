@@ -27,7 +27,7 @@ const fruits = [
 ]
 
 /**
- * Combobox element.
+ * Autocomplete input and command palette with a list of suggestions built on top of [Radix UI](https://www.radix-ui.com/primitives) and [cmdk](https://github.com/pacocoursey/cmdk).
  *
  * ### Anatomy
  *
@@ -105,9 +105,18 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default = {} satisfies Story
+/**
+ * Basic combobox implementation.
+ */
+export const Default = {
+  args: {},
+} satisfies Story
 
+/**
+ * Combobox can support multiple values, with full keyboard accessibility.
+ */
 export const Multiple = {
+  args: {},
   render: () => {
     const [value, setValue] = React.useState(fruits.map((fruit) => fruit.value))
     const [inputValue, setInputValue] = React.useState("")
@@ -134,6 +143,54 @@ export const Multiple = {
           <ComboboxPrimitive.Input placeholder="Search fruit..." />
           <ComboboxPrimitive.Clear>&#215;</ComboboxPrimitive.Clear>
           <ComboboxPrimitive.Trigger>&#8595;</ComboboxPrimitive.Trigger>
+        </ComboboxPrimitive.Anchor>
+        <ComboboxPrimitive.Portal>
+          <ComboboxPrimitive.Content>
+            <ComboboxPrimitive.Empty>No fruit found.</ComboboxPrimitive.Empty>
+            <ComboboxPrimitive.Group heading="Fruits">
+              {fruits.map((fruit) => (
+                <ComboboxPrimitive.Item
+                  key={fruit.value}
+                  textValue={fruit.label}
+                  value={fruit.value}
+                  className="data-[selected=true]:ring"
+                >
+                  {fruit.label}
+                  <ComboboxPrimitive.ItemIndicator>
+                    &#x2714;
+                  </ComboboxPrimitive.ItemIndicator>
+                </ComboboxPrimitive.Item>
+              ))}
+            </ComboboxPrimitive.Group>
+          </ComboboxPrimitive.Content>
+        </ComboboxPrimitive.Portal>
+      </ComboboxPrimitive.Root>
+    )
+  },
+} satisfies Story
+
+/**
+ * Combobox can be used as a multi-select.
+ */
+export const MultiSelect = {
+  args: {},
+  render: () => {
+    const [value, setValue] = React.useState(fruits.map((fruit) => fruit.value))
+    const [inputValue, setInputValue] = React.useState("")
+
+    return (
+      <ComboboxPrimitive.Root
+        type="multiple"
+        value={value}
+        onValueChange={setValue}
+        inputValue={inputValue}
+        onInputValueChange={setInputValue}
+      >
+        <ComboboxPrimitive.Anchor>
+          <ComboboxPrimitive.Trigger>
+            {value.length ? `${value.length} selected` : "Select fruit"}
+          </ComboboxPrimitive.Trigger>
+          <ComboboxPrimitive.Clear>&#215;</ComboboxPrimitive.Clear>
         </ComboboxPrimitive.Anchor>
         <ComboboxPrimitive.Portal>
           <ComboboxPrimitive.Content>

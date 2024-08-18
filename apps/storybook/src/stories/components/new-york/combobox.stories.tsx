@@ -49,7 +49,7 @@ const fruits = [
 ]
 
 /**
- * Combobox element.
+ * Autocomplete input and command palette with a list of suggestions.
  *
  * ### Anatomy
  *
@@ -103,7 +103,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default = {} satisfies Story
+export const Default = {
+  args: {},
+} satisfies Story
 
 const FormSchema = z.object({
   fruit: z.string().array(),
@@ -176,6 +178,7 @@ function ComboboxForm() {
 }
 
 export const WithForm = {
+  args: {},
   decorators: [
     (Story) => (
       <>
