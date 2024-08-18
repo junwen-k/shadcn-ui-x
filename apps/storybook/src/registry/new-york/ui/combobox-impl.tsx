@@ -24,16 +24,8 @@ type ComboboxContextProps = {
   disabled?: boolean
   required?: boolean
 } & (
-  | {
-      type: "multiple"
-      value: string[]
-      onValueChange: (value: string[]) => void
-    }
-  | {
-      type: "single"
-      value: string
-      onValueChange: (value: string) => void
-    }
+  | Required<Pick<ComboboxSingleProps, "type" | "value" | "onValueChange">>
+  | Required<Pick<ComboboxMultipleProps, "type" | "value" | "onValueChange">>
 )
 
 const ComboboxContext = React.createContext<ComboboxContextProps>({
@@ -55,12 +47,15 @@ const ComboboxContext = React.createContext<ComboboxContextProps>({
 
 export const useComboboxContext = () => React.useContext(ComboboxContext)
 
+type ComboboxType = "single" | "multiple"
+
 interface ComboboxBaseProps
   extends React.ComponentProps<typeof PopoverPrimitive.Root>,
     Omit<
       React.ComponentProps<typeof CommandPrimitive>,
       "value" | "defaultValue" | "onValueChange"
     > {
+  type?: ComboboxType | undefined
   inputValue?: string
   defaultInputValue?: string
   onInputValueChange?: (inputValue: string) => void
@@ -69,19 +64,31 @@ interface ComboboxBaseProps
   required?: boolean
 }
 
-type ComboboxValue<T extends "single" | "multiple" = "single"> =
-  T extends "single" ? string : T extends "multiple" ? string[] : never
+type ComboboxValue<T extends ComboboxType = "single"> = T extends "single"
+  ? string
+  : T extends "multiple"
+    ? string[]
+    : never
 
-interface ComboboxProps<T extends "single" | "multiple" = "single">
-  extends ComboboxBaseProps {
-  type?: T
-  value?: ComboboxValue<T>
-  defaultValue?: ComboboxValue<T>
-  onValueChange?: (value: ComboboxValue<T>) => void
+interface ComboboxSingleProps {
+  type: "single"
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
 }
 
+interface ComboboxMultipleProps {
+  type: "multiple"
+  value?: string[]
+  defaultValue?: string[]
+  onValueChange?: (value: string[]) => void
+}
+
+type ComboboxProps = ComboboxBaseProps &
+  (ComboboxSingleProps | ComboboxMultipleProps)
+
 export const Combobox = React.forwardRef(
-  <T extends "single" | "multiple" = "single">(
+  <T extends ComboboxType = "single">(
     {
       type = "single" as T,
       open: openProp,
@@ -99,14 +106,14 @@ export const Combobox = React.forwardRef(
       disabled,
       required,
       ...props
-    }: ComboboxProps<T>,
+    }: ComboboxProps,
     ref: React.ForwardedRef<React.ElementRef<typeof CommandPrimitive>>
   ) => {
     const [value = type === "multiple" ? [] : "", setValue] =
       useControllableState<ComboboxValue<T>>({
-        prop: valueProp,
-        defaultProp: defaultValue,
-        onChange: onValueChange,
+        prop: valueProp as ComboboxValue<T>,
+        defaultProp: defaultValue as ComboboxValue<T>,
+        onChange: onValueChange as (value: ComboboxValue<T>) => void,
       })
     const [inputValue = "", setInputValue] = useControllableState({
       prop: inputValueProp,
