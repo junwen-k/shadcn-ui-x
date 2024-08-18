@@ -24,7 +24,7 @@ import { Toaster } from "@/registry/new-york/ui/toaster"
 import { toast } from "@/registry/new-york/ui/use-toast"
 
 /**
- * The Date Picker is built using a composition of the `<Popover />` and the `<Calendar />` components.
+ * Date picker allow users to enter or select a date value.
  *
  * ### Anatomy:
  *

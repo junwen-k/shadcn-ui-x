@@ -5,7 +5,7 @@ import { addDays } from "date-fns"
 import * as DatePickerPrimitive from "@/registry/new-york/ui/date-picker-impl"
 
 /**
- * Date Picker element.
+ * Date Picker primitive built on top of [Radix UI](https://www.radix-ui.com/primitives) and [React DayPicker](https://daypicker.dev/).
  *
  * ### Anatomy
  *
