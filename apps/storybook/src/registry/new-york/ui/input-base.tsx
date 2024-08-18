@@ -3,6 +3,7 @@
 import * as React from "react"
 import { composeEventHandlers } from "@radix-ui/primitive"
 import { composeRefs } from "@radix-ui/react-compose-refs"
+import { Primitive } from "@radix-ui/react-primitive"
 import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
@@ -22,18 +23,16 @@ const InputBaseContext = React.createContext<InputBaseContextProps>({
 
 const useInputBaseContext = () => React.useContext(InputBaseContext)
 
-interface InputBaseProps extends React.ComponentPropsWithoutRef<"div"> {
+interface InputBaseProps
+  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
   autoFocus?: boolean
   disabled?: boolean
-  asChild?: boolean
 }
 
 export const InputBase = React.forwardRef<
-  React.ElementRef<"div">,
+  React.ElementRef<typeof Primitive.div>,
   InputBaseProps
->(({ asChild, autoFocus, disabled, className, onClick, ...props }, ref) => {
-  const Comp = asChild ? Slot : "div"
-
+>(({ autoFocus, disabled, className, onClick, ...props }, ref) => {
   const [focused, setFocused] = React.useState(false)
 
   const controlRef = React.useRef<HTMLElement>(null)
@@ -47,7 +46,7 @@ export const InputBase = React.forwardRef<
         onFocusedChange: setFocused,
       }}
     >
-      <Comp
+      <Primitive.div
         ref={ref}
         onClick={composeEventHandlers(onClick, (event) => {
           // Based on MUI's <InputBase /> implementation.
@@ -57,7 +56,7 @@ export const InputBase = React.forwardRef<
           }
         })}
         className={cn(
-          "flex min-h-9 cursor-text gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
+          "flex min-h-9 cursor-text gap-1 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
           disabled && "cursor-not-allowed opacity-50",
           focused && "ring-1 ring-ring",
           className
@@ -70,10 +69,10 @@ export const InputBase = React.forwardRef<
 InputBase.displayName = "InputBase"
 
 export const InputBaseFlexWrapper = React.forwardRef<
-  React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div">
+  React.ElementRef<typeof Primitive.div>,
+  React.ComponentPropsWithoutRef<typeof Primitive.div>
 >(({ className, ...props }, ref) => (
-  <div
+  <Primitive.div
     ref={ref}
     className={cn("flex flex-1 flex-wrap", className)}
     {...props}
@@ -165,10 +164,10 @@ export const InputBaseAdornmentButton = React.forwardRef<
 InputBaseAdornmentButton.displayName = "InputBaseAdornmentButton"
 
 export const InputBaseInput = React.forwardRef<
-  React.ElementRef<"input">,
-  React.ComponentPropsWithoutRef<"input">
+  React.ElementRef<typeof Primitive.input>,
+  React.ComponentPropsWithoutRef<typeof Primitive.input>
 >(({ className, ...props }, ref) => (
-  <input
+  <Primitive.input
     ref={ref}
     className={cn(
       "w-full flex-1 bg-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none disabled:pointer-events-none",
