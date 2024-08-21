@@ -266,6 +266,7 @@ export const ComboboxTagGroupItem = React.forwardRef<
     </ComboboxTagGroupItemContext.Provider>
   )
 })
+ComboboxTagGroupItem.displayName = "ComboboxTagGroupItem"
 
 export const ComboboxTagGroupItemRemove = React.forwardRef<
   React.ElementRef<typeof Primitive.button>,
@@ -468,7 +469,7 @@ export const ComboboxItem = React.forwardRef<
     }
 
     return itemRef.current?.textContent?.trim() ?? ""
-  }, [textValue, children, itemRef.current])
+  }, [textValue, children])
 
   const isSelected =
     type === "single" ? value === valueProp : value.includes(valueProp)
@@ -517,6 +518,7 @@ export const ComboboxItemIndicator = React.forwardRef<
 
   return <Primitive.span aria-hidden {...props} ref={ref} />
 })
+ComboboxItemIndicator.displayName = "ComboboxItemIndicator"
 
 export const ComboboxGroup = CommandPrimitive.Group
 

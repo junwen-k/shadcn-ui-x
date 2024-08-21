@@ -136,6 +136,7 @@ export const ComboboxEmpty = React.forwardRef<
     {...props}
   />
 ))
+ComboboxEmpty.displayName = "ComboboxEmpty"
 
 export const ComboboxGroup = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Group>,
