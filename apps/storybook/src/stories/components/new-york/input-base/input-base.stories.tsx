@@ -1,4 +1,3 @@
-import { InfoCircledIcon } from "@radix-ui/react-icons"
 import type { Meta, StoryObj } from "@storybook/react"
 
 import {
@@ -9,6 +8,11 @@ import {
   InputBaseFlexWrapper,
   InputBaseInput,
 } from "@/registry/new-york/ui/input-base"
+
+import { InputBaseActionAdornmentExample } from "./input-base-action-adornment-example"
+import { InputBaseAdornmentExample } from "./input-base-adornment-example"
+import { InputBaseDefaultExample } from "./input-base-default-example"
+import { InputBaseDisabledExample } from "./input-base-disabled-example"
 
 /**
  * Base component to create custom inputs.
@@ -37,13 +41,7 @@ const meta = {
     InputBaseFlexWrapper,
     InputBaseInput,
   } as any,
-  render: (args) => (
-    <InputBase {...args}>
-      <InputBaseControl>
-        <InputBaseInput type="email" placeholder="Email" />
-      </InputBaseControl>
-    </InputBase>
-  ),
+  render: InputBaseDefaultExample,
   parameters: {
     layout: "centered",
   },
@@ -62,49 +60,19 @@ export const Default = {} satisfies Story
  */
 export const Disabled = {
   args: { disabled: true },
-  render: (args) => (
-    <InputBase {...args}>
-      <InputBaseControl>
-        <InputBaseInput placeholder="Name" />
-      </InputBaseControl>
-      <InputBaseAdornment>
-        <InputBaseAdornmentButton>
-          <InfoCircledIcon />
-        </InputBaseAdornmentButton>
-      </InputBaseAdornment>
-    </InputBase>
-  ),
+  render: InputBaseDisabledExample,
 } satisfies Story
 
 /**
  * Input base can have start / end adornment(s).
  */
 export const Adornment = {
-  render: (args) => (
-    <InputBase {...args}>
-      <InputBaseAdornment>₩</InputBaseAdornment>
-      <InputBaseControl>
-        <InputBaseInput type="number" placeholder="Amount" />
-      </InputBaseControl>
-      <InputBaseAdornment>WON</InputBaseAdornment>
-    </InputBase>
-  ),
+  render: InputBaseAdornmentExample,
 } satisfies Story
 
 /**
  * Input base can have action adornment.
  */
 export const ActionAdornment = {
-  render: (args) => (
-    <InputBase {...args}>
-      <InputBaseControl>
-        <InputBaseInput placeholder="Name" />
-      </InputBaseControl>
-      <InputBaseAdornment>
-        <InputBaseAdornmentButton>
-          <InfoCircledIcon />
-        </InputBaseAdornmentButton>
-      </InputBaseAdornment>
-    </InputBase>
-  ),
+  render: InputBaseActionAdornmentExample,
 } satisfies Story
