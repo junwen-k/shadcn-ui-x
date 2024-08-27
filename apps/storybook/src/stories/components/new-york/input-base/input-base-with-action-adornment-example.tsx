@@ -9,7 +9,7 @@ import {
   InputBaseInput,
 } from "@/registry/new-york/ui/input-base"
 
-export const InputBaseActionAdornmentExample = (
+export const InputBaseWithActionAdornmentExample = (
   props: React.ComponentProps<typeof InputBase>
 ) => (
   <InputBase {...props}>

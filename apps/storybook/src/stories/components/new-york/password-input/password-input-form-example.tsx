@@ -1,7 +1,6 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LockClosedIcon } from "@radix-ui/react-icons"
-import type { Meta, StoryObj } from "@storybook/react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -21,69 +20,7 @@ import {
   PasswordInputControl,
   PasswordInputInput,
 } from "@/registry/new-york/ui/password-input"
-import { Toaster } from "@/registry/new-york/ui/toaster"
 import { toast } from "@/registry/new-york/ui/use-toast"
-
-/**
- * Password Input provides a way for the user to securely enter a password, with the ability to toggle the visibility of the password.
- *
- * ### Anatomy
- *
- * ```tsx
- * <PasswordInput.Root>
- *  <PasswordInput.Control>
- *    <PasswordInput.Input />
- *  </PasswordInput.Control>
- *  <PasswordInput.AdornmentRevealToggle />
- * </PasswordInput.Root>
- * ```
- */
-const meta = {
-  title: "Components/new-york/PasswordInput",
-  component: PasswordInput,
-  render: (args) => (
-    <PasswordInput {...args}>
-      <PasswordInputControl>
-        <PasswordInputInput
-          autoComplete="new-password"
-          placeholder="Password"
-        />
-      </PasswordInputControl>
-      <PasswordInputAdornmentRevealToggle />
-    </PasswordInput>
-  ),
-  parameters: {
-    layout: "centered",
-  },
-} satisfies Meta<typeof PasswordInput>
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-/**
- * Default variant of the password input.
- */
-export const Default = {} satisfies Story
-
-/**
- * Password input with start adornment.
- */
-export const WithAdornment = {
-  render: (args) => (
-    <PasswordInput {...args}>
-      <PasswordInputAdornment>
-        <LockClosedIcon />
-      </PasswordInputAdornment>
-      <PasswordInputControl>
-        <PasswordInputInput
-          autoComplete="new-password"
-          placeholder="Password"
-        />
-      </PasswordInputControl>
-      <PasswordInputAdornmentRevealToggle />
-    </PasswordInput>
-  ),
-} satisfies Story
 
 const FormSchema = z
   .object({
@@ -97,7 +34,7 @@ const FormSchema = z
     path: ["confirmPassword"],
   })
 
-function PasswordForm() {
+export const PasswordInputFormExample = () => {
   const [revealPassword, setRevealPassword] = React.useState(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -183,18 +120,3 @@ function PasswordForm() {
     </Form>
   )
 }
-
-/**
- * Use `<Form>` components to manage the state of the password input(s).
- */
-export const WithForm = {
-  decorators: [
-    (Story) => (
-      <>
-        <Toaster />
-        <Story />
-      </>
-    ),
-  ],
-  render: PasswordForm,
-} satisfies Story

@@ -9,10 +9,10 @@ import {
   InputBaseInput,
 } from "@/registry/new-york/ui/input-base"
 
-import { InputBaseActionAdornmentExample } from "./input-base-action-adornment-example"
-import { InputBaseAdornmentExample } from "./input-base-adornment-example"
 import { InputBaseDefaultExample } from "./input-base-default-example"
 import { InputBaseDisabledExample } from "./input-base-disabled-example"
+import { InputBaseWithActionAdornmentExample } from "./input-base-with-action-adornment-example"
+import { InputBaseWithAdornmentExample } from "./input-base-with-adornment-example"
 
 /**
  * Base component to create custom inputs.
@@ -66,13 +66,13 @@ export const Disabled = {
 /**
  * Input base can have start / end adornment(s).
  */
-export const Adornment = {
-  render: InputBaseAdornmentExample,
+export const WithAdornment = {
+  render: InputBaseWithAdornmentExample,
 } satisfies Story
 
 /**
  * Input base can have action adornment.
  */
-export const ActionAdornment = {
-  render: InputBaseActionAdornmentExample,
+export const WithActionAdornment = {
+  render: InputBaseWithActionAdornmentExample,
 } satisfies Story
