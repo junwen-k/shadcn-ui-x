@@ -1,5 +1,3 @@
-"use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Cross2Icon, FileIcon } from "@radix-ui/react-icons"
 import prettyBytes from "pretty-bytes"
@@ -37,22 +35,22 @@ import { toast } from "@/registry/new-york/ui/use-toast"
 // 100 kB
 const MAX_FILE_SIZE = 100000
 
-export const DropzoneFormExample = () => {
-  const FormSchema = z.object({
-    files: z
-      .array(
-        z.object({
-          file: z
-            .instanceof(File)
-            .refine(
-              (file) => file.size <= MAX_FILE_SIZE,
-              "File exceed max file size"
-            ),
-        })
-      )
-      .min(1, { message: "Minimum one file is required" }),
-  })
+const FormSchema = z.object({
+  files: z
+    .array(
+      z.object({
+        file: z
+          .instanceof(File)
+          .refine(
+            (file) => file.size <= MAX_FILE_SIZE,
+            "File exceed max file size"
+          ),
+      })
+    )
+    .min(1, { message: "Minimum one file is required" }),
+})
 
+export const DropzoneFormExample = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
