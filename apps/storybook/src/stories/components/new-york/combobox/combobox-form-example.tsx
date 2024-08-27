@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Meta, StoryObj } from "@storybook/react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -9,7 +8,6 @@ import {
   ComboboxContent,
   ComboboxEmpty,
   ComboboxGroup,
-  ComboboxInput,
   ComboboxItem,
   ComboboxTag,
   ComboboxTagsInput,
@@ -22,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/registry/new-york/ui/form"
-import { Toaster } from "@/registry/new-york/ui/toaster"
 import { toast } from "@/registry/new-york/ui/use-toast"
 
 const fruits = [
@@ -48,65 +45,6 @@ const fruits = [
   },
 ]
 
-/**
- * Autocomplete input and command palette with a list of suggestions.
- *
- * ### Anatomy
- *
- * ```tsx
- * <Combobox.Root>
- *
- *   <Combobox.ComboboxTagsInput>
- *     <Combobox.ComboboxTag />
- *   </Combobox.ComboboxTagsInput>
- *
- *   <Combobox.Input />
- *
- *   <Combobox.Content>
- *     <Combobox.Empty />
- *     <Combobox.Loading />
- *
- *     <Combobox.Item />
- *
- *     <Combobox.Group>
- *       <Combobox.Item />
- *     </Combobox.Group>
- *
- *     <Combobox.Separator />
- *   </Combobox.Content>
- * </Combobox.Root>
- * ```
- */
-const meta = {
-  title: "Components/new-york/Combobox",
-  component: Combobox,
-  render: (args) => (
-    <Combobox {...args}>
-      <ComboboxInput placeholder="Search fruit..." />
-      <ComboboxContent>
-        <ComboboxEmpty>No fruit found.</ComboboxEmpty>
-        <ComboboxGroup heading="Fruits">
-          <ComboboxItem value="apple">Apple</ComboboxItem>
-          <ComboboxItem value="banana">Banana</ComboboxItem>
-          <ComboboxItem value="blueberry">Blueberry</ComboboxItem>
-          <ComboboxItem value="grapes">Grapes</ComboboxItem>
-          <ComboboxItem value="pineapple">Pineapple</ComboboxItem>
-        </ComboboxGroup>
-      </ComboboxContent>
-    </Combobox>
-  ),
-  parameters: {
-    layout: "centered",
-  },
-} satisfies Meta<typeof Combobox>
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Default = {
-  args: {},
-} satisfies Story
-
 const FormSchema = z.object({
   fruit: z
     .string()
@@ -114,7 +52,7 @@ const FormSchema = z.object({
     .min(1, { message: "Please select at least 1 fruit" }),
 })
 
-function ComboboxForm() {
+export const ComboboxFormExample = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -179,16 +117,3 @@ function ComboboxForm() {
     </Form>
   )
 }
-
-export const WithForm = {
-  args: {},
-  decorators: [
-    (Story) => (
-      <>
-        <Toaster />
-        <Story />
-      </>
-    ),
-  ],
-  render: ComboboxForm,
-} satisfies Story

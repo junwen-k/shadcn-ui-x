@@ -153,27 +153,34 @@ export const ComboboxGroup = React.forwardRef<
 ))
 ComboboxGroup.displayName = "ComboboxGroup"
 
+const ComboboxSeparator = React.forwardRef<
+  React.ElementRef<typeof ComboboxPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <ComboboxPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-border", className)}
+    {...props}
+  />
+))
+ComboboxSeparator.displayName = "ComboboxSeparator"
+
 export const ComboboxItem = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Item>
->(({ className, children, ...props }, ref) => {
-  return (
-    <ComboboxPrimitive.Item
-      ref={ref}
-      className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
-        className
-      )}
-      // TODO: how to implement text value?
-      textValue={children as string}
-      {...props}
-    >
-      {/* ComboboxText -> Children */}
-      <Slottable>{children}</Slottable>
-      <ComboboxPrimitive.ItemIndicator className="absolute right-2 flex size-3.5 items-center justify-center">
-        <CheckIcon className="size-4" />
-      </ComboboxPrimitive.ItemIndicator>
-    </ComboboxPrimitive.Item>
-  )
-})
+>(({ className, children, ...props }, ref) => (
+  <ComboboxPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <Slottable>{children}</Slottable>
+    <ComboboxPrimitive.ItemIndicator className="absolute right-2 flex size-3.5 items-center justify-center">
+      <CheckIcon className="size-4" />
+    </ComboboxPrimitive.ItemIndicator>
+  </ComboboxPrimitive.Item>
+))
 ComboboxItem.displayName = "ComboboxItem"
