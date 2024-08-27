@@ -4,6 +4,10 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/registry/new-york/ui/native-select"
+import { Toaster } from "@/registry/new-york/ui/toaster"
+
+import { NativeSelectDefaultExample } from "./native-select-default-example"
+import { NativeSelectFormExample } from "./native-select-form-example"
 
 /**
  * Native select element.
@@ -22,15 +26,7 @@ const meta = {
   subcomponents: {
     NativeSelectOption,
   } as any,
-  render: (args) => (
-    <NativeSelect {...args}>
-      <NativeSelectOption>Option 1</NativeSelectOption>
-      <NativeSelectOption>Option 2</NativeSelectOption>
-      <NativeSelectOption>Option 3</NativeSelectOption>
-      <NativeSelectOption>Option 4</NativeSelectOption>
-      <NativeSelectOption>Option 5</NativeSelectOption>
-    </NativeSelect>
-  ),
+  render: NativeSelectDefaultExample,
   parameters: {
     layout: "centered",
   },
@@ -40,3 +36,16 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default = {} satisfies Story
+
+export const WithForm = {
+  args: {},
+  decorators: [
+    (Story) => (
+      <>
+        <Toaster />
+        <Story />
+      </>
+    ),
+  ],
+  render: NativeSelectFormExample,
+} satisfies Story
