@@ -167,7 +167,14 @@ ComboboxSeparator.displayName = "ComboboxSeparator"
 
 export const ComboboxItem = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Item>
+  Omit<
+    React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Item>,
+    "children"
+  > &
+    Pick<
+      React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.ItemText>,
+      "children"
+    >
 >(({ className, children, ...props }, ref) => (
   <ComboboxPrimitive.Item
     ref={ref}
@@ -177,7 +184,7 @@ export const ComboboxItem = React.forwardRef<
     )}
     {...props}
   >
-    <Slottable>{children}</Slottable>
+    <ComboboxPrimitive.ItemText>{children}</ComboboxPrimitive.ItemText>
     <ComboboxPrimitive.ItemIndicator className="absolute right-2 flex size-3.5 items-center justify-center">
       <CheckIcon className="size-4" />
     </ComboboxPrimitive.ItemIndicator>

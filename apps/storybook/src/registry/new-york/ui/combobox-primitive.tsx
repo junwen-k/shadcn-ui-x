@@ -440,36 +440,43 @@ interface ComboboxItemProps
     "value"
   > {
   value: string
-  textValue?: string
 }
 
 const ComboboxItemContext = React.createContext({ isSelected: false })
 
 const useComboboxItemContext = () => React.useContext(ComboboxItemContext)
 
+const findComboboxItemText = (children: React.ReactNode) => {
+  let text = ""
+
+  React.Children.forEach(children, (child) => {
+    if (text) {
+      return
+    }
+
+    if (React.isValidElement<{ children: React.ReactNode }>(child)) {
+      if (child.type === ComboboxItemText) {
+        text = child.props.children as string
+      } else {
+        text = findComboboxItemText(child.props.children)
+      }
+    }
+  })
+
+  return text
+}
+
 export const ComboboxItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   ComboboxItemProps
->(({ textValue, value: valueProp, children, onMouseDown, ...props }, ref) => {
+>(({ value: valueProp, children, onMouseDown, ...props }, ref) => {
   const { type, value, onValueChange, onInputValueChange, onOpenChange } =
     useComboboxContext()
 
-  const itemRef =
-    React.useRef<React.ElementRef<typeof CommandPrimitive.Item>>(null)
-
-  const composedRefs = useComposedRefs(ref, itemRef)
-
-  const inputValue = React.useMemo(() => {
-    if (textValue) {
-      return textValue
-    }
-
-    if (typeof children === "string") {
-      return children.trim()
-    }
-
-    return itemRef.current?.textContent?.trim() ?? ""
-  }, [textValue, children])
+  const inputValue = React.useMemo(
+    () => findComboboxItemText(children),
+    [children]
+  )
 
   const isSelected =
     type === "single" ? value === valueProp : value.includes(valueProp)
@@ -477,7 +484,7 @@ export const ComboboxItem = React.forwardRef<
   return (
     <ComboboxItemContext.Provider value={{ isSelected }}>
       <CommandPrimitive.Item
-        ref={composedRefs}
+        ref={ref}
         onMouseDown={composeEventHandlers(onMouseDown, (event) =>
           event.preventDefault()
         )}
@@ -520,6 +527,17 @@ export const ComboboxItemIndicator = React.forwardRef<
 })
 ComboboxItemIndicator.displayName = "ComboboxItemIndicator"
 
+interface ComboboxItemTextProps
+  extends React.ComponentPropsWithoutRef<typeof React.Fragment> {
+  children: string
+}
+
+export const ComboboxItemText = React.forwardRef<
+  React.ElementRef<typeof React.Fragment>,
+  ComboboxItemTextProps
+>((props) => <React.Fragment {...props} />)
+ComboboxItemText.displayName = "ComboboxItemText"
+
 export const ComboboxGroup = CommandPrimitive.Group
 
 export const ComboboxSeparator = CommandPrimitive.Separator
@@ -538,6 +556,7 @@ const Empty = ComboboxEmpty
 const Loading = ComboboxLoading
 const Item = ComboboxItem
 const ItemIndicator = ComboboxItemIndicator
+const ItemText = ComboboxItemText
 const Group = ComboboxGroup
 const Separator = ComboboxSeparator
 
@@ -556,6 +575,7 @@ export {
   Loading,
   Item,
   ItemIndicator,
+  ItemText,
   Group,
   Separator,
 }
