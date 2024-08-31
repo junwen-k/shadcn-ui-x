@@ -126,7 +126,7 @@ function DatePickerForm() {
                   <DatePickerInput className="w-[280px]" />
                 </FormControl>
                 <DatePickerContent>
-                  <DatePickerCalendar />
+                  <DatePickerCalendar hideNavigation captionLayout="dropdown" />
                 </DatePickerContent>
               </DatePicker>
               <FormMessage />
