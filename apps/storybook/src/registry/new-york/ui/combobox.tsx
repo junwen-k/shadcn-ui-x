@@ -3,6 +3,7 @@
 import * as React from "react"
 import { CaretSortIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons"
 import { Slottable } from "@radix-ui/react-slot"
+import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { badgeVariants } from "@/registry/new-york/ui/badge"
@@ -165,6 +166,10 @@ const ComboboxSeparator = React.forwardRef<
 ))
 ComboboxSeparator.displayName = "ComboboxSeparator"
 
+export const comboboxItemStyle = cva(
+  "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50"
+)
+
 export const ComboboxItem = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Item>,
   Omit<
@@ -178,10 +183,7 @@ export const ComboboxItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ComboboxPrimitive.Item
     ref={ref}
-    className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
-      className
-    )}
+    className={cn(comboboxItemStyle(), className)}
     {...props}
   >
     <ComboboxPrimitive.ItemText>{children}</ComboboxPrimitive.ItemText>
