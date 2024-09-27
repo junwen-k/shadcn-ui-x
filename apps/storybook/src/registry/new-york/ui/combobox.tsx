@@ -1,7 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { CaretSortIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons"
+import {
+  CaretSortIcon,
+  CheckIcon,
+  CircleIcon,
+  Cross2Icon,
+} from "@radix-ui/react-icons"
 import { Slottable } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
 
@@ -138,6 +143,20 @@ export const ComboboxEmpty = React.forwardRef<
   />
 ))
 ComboboxEmpty.displayName = "ComboboxEmpty"
+
+export const ComboboxLoading = React.forwardRef<
+  React.ElementRef<typeof ComboboxPrimitive.Loading>,
+  React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Loading>
+>((props, ref) => (
+  <ComboboxPrimitive.Loading
+    ref={ref}
+    className="flex items-center justify-center px-1.5 py-2"
+    {...props}
+  >
+    <CircleIcon className="size-4 animate-spin [mask:conic-gradient(transparent_45deg,_white)]" />
+  </ComboboxPrimitive.Loading>
+))
+ComboboxLoading.displayName = "ComboboxLoading"
 
 export const ComboboxGroup = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive.Group>,

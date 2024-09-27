@@ -14,6 +14,7 @@ import { Toaster } from "@/registry/new-york/ui/toaster"
 
 import { ComboboxDefaultExample } from "./combobox-default-example"
 import { ComboboxFormExample } from "./combobox-form-example"
+import { ComboboxLoadingExample } from "./combobox-loading-example"
 
 /**
  * Autocomplete input and command palette with a list of suggestions.
@@ -67,6 +68,11 @@ type Story = StoryObj<typeof meta>
 
 export const Default = {
   args: {},
+} satisfies Story
+
+export const Loading = {
+  args: {},
+  render: ComboboxLoadingExample,
 } satisfies Story
 
 export const WithForm = {
