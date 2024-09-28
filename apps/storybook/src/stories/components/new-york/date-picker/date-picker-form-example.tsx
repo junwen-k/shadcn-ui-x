@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Meta, StoryObj } from "@storybook/react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -9,8 +8,6 @@ import {
   DatePickerCalendar,
   DatePickerContent,
   DatePickerInput,
-  DatePickerTrigger,
-  DatePickerValue,
 } from "@/registry/new-york/ui/date-picker"
 import {
   Form,
@@ -20,80 +17,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/registry/new-york/ui/form"
-import { Toaster } from "@/registry/new-york/ui/toaster"
 import { toast } from "@/registry/new-york/ui/use-toast"
-
-/**
- * Date picker allow users to enter or select a date value.
- *
- * ### Anatomy:
- *
- * ```tsx
- * <DatePicker.Root>
- *  <DatePicker.Trigger>
- *    <DatePicker.Value />
- *  </DatePicker.Trigger>
- *
- *  <DatePicker.Input />
- *
- *  <DatePicker.Content>
- *    <DatePicker.Calendar />
- *  </DatePicker.Content>
- * </DatePicker.Root>
- * ```
- */
-const meta = {
-  title: "Components/new-york/DatePicker",
-  component: DatePicker,
-  subcomponents: {
-    DatePickerInput,
-    DatePickerTrigger,
-    DatePickerValue,
-    DatePickerContent,
-    DatePickerCalendar,
-  } as any,
-  render: (args) => (
-    <DatePicker {...args}>
-      <DatePickerTrigger className="w-[280px]">
-        <DatePickerValue placeholder="Pick a date" />
-      </DatePickerTrigger>
-      <DatePickerContent>
-        <DatePickerCalendar />
-      </DatePickerContent>
-    </DatePicker>
-  ),
-  parameters: {
-    layout: "centered",
-  },
-} satisfies Meta<typeof DatePicker>
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Trigger = {} satisfies Story
-
-export const Required = {
-  args: {
-    required: true,
-  },
-} satisfies Story
-
-export const Input = {
-  render: (args) => (
-    <DatePicker {...args}>
-      <DatePickerInput className="w-[280px]" />
-      <DatePickerContent>
-        <DatePickerCalendar />
-      </DatePickerContent>
-    </DatePicker>
-  ),
-} satisfies Story
 
 const FormSchema = z.object({
   date: z.date().nullable(),
 })
 
-function DatePickerForm() {
+export const DatePickerFormExample = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -138,15 +68,3 @@ function DatePickerForm() {
     </Form>
   )
 }
-
-export const WithForm = {
-  decorators: [
-    (Story) => (
-      <>
-        <Toaster />
-        <Story />
-      </>
-    ),
-  ],
-  render: DatePickerForm,
-} satisfies Story
