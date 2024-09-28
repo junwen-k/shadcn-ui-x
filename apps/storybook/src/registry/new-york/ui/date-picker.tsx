@@ -6,7 +6,7 @@ import { CalendarIcon, Cross2Icon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/registry/new-york/ui/button"
 import { Calendar } from "@/registry/new-york/ui/calendar"
-import * as DatePickerPrimitive from "@/registry/new-york/ui/date-picker-impl"
+import * as DatePickerPrimitive from "@/registry/new-york/ui/date-picker-primitive"
 import {
   InputBase,
   InputBaseAdornment,
@@ -24,7 +24,7 @@ const DatePickerInputBase = React.forwardRef<
   React.ElementRef<typeof InputBase>,
   React.ComponentPropsWithoutRef<typeof InputBase>
 >(({ children, ...props }, ref) => (
-  <DatePickerAnchor>
+  <DatePickerAnchor asChild>
     <InputBase ref={ref} {...props}>
       {children}
       <InputBaseAdornment>
@@ -114,12 +114,10 @@ export const DatePickerContent = React.forwardRef<
 ))
 DatePickerContent.displayName = "DatePickerContent"
 
-export const DatePickerCalendar = React.forwardRef<
-  React.ElementRef<typeof DatePickerPrimitive.Calendar>,
-  React.ComponentPropsWithoutRef<typeof DatePickerPrimitive.Calendar>
->((props, ref) => (
+export const DatePickerCalendar = (
+  props: React.ComponentPropsWithoutRef<typeof Calendar>
+) => (
   <DatePickerPrimitive.Calendar asChild>
-    <Calendar ref={ref} {...props} />
+    <Calendar {...props} />
   </DatePickerPrimitive.Calendar>
-))
-DatePickerCalendar.displayName = "DatePickerCalendar"
+)
