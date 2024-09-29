@@ -13,6 +13,10 @@ interface DateFieldProps
   value?: Date | null
   defaultValue?: Date
   onValueChange?: (value: Date | null) => void
+  /**
+   * If true, the input's text is cleared on blur if date string is invalid.
+   */
+  clearOnBlur?: boolean
 }
 
 const DateField = React.forwardRef<
@@ -26,6 +30,7 @@ const DateField = React.forwardRef<
       onValueChange,
       onBlur,
       inputFormatStr = "yyyy-MM-dd",
+      clearOnBlur,
       ...props
     },
     ref
@@ -55,13 +60,18 @@ const DateField = React.forwardRef<
             new Date()
           )
 
-          if (isValid(parsedDate)) {
-            setValue(parsedDate)
-            setInputValue(format(parsedDate, inputFormatStr))
-          } else {
-            setValue(null)
-            setInputValue("")
+          if (!isValid(parsedDate)) {
+            if (clearOnBlur) {
+              setValue(null)
+              setInputValue("")
+            } else {
+              setInputValue(value ? format(value, inputFormatStr) : "")
+            }
+            return
           }
+
+          setValue(parsedDate)
+          setInputValue(format(parsedDate, inputFormatStr))
         })}
         placeholder={inputFormatStr}
         {...props}

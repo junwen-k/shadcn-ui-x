@@ -8,39 +8,67 @@ import type * as Radix from "@radix-ui/react-primitive"
 import { Slot } from "@radix-ui/react-slot"
 import { useControllableState } from "@radix-ui/react-use-controllable-state"
 import { format } from "date-fns"
-import type { DayPickerProps as DayPickerPrimitiveProps } from "react-day-picker"
-import { DayPicker } from "react-day-picker"
+import {
+  DayPicker,
+  type Mode as DatePickerMode,
+  type DateRange,
+  type DayPickerProps as DayPickerPrimitiveProps,
+} from "react-day-picker"
 
 import * as DateFieldPrimitive from "@/registry/new-york/ui/date-field-primitive"
 
-interface DatePickerProps
-  extends React.ComponentProps<typeof PopoverPrimitive.Root> {
-  formatStr?: string
-  inputFormatStr?: string
+type DatePickerContextProps = {
+  formatStr: string
+  inputFormatStr: string
   month?: Date
-  defaultMonth?: Date
-  onMonthChange?: (month: Date) => void
-  value?: Date | null
-  defaultValue?: Date
-  onValueChange?: (value: Date | null) => void
+  onMonthChange: (month: Date) => void
   disabled?: boolean
-  required?: boolean
-}
-
-const DatePickerContext = React.createContext<
-  Pick<DatePickerProps, "month" | "value" | "disabled" | "required"> &
-    Required<
+} & (
+  | Required<
       Pick<
-        DatePickerProps,
-        "formatStr" | "inputFormatStr" | "onMonthChange" | "onValueChange"
+        DatePickerSingleProps,
+        "mode" | "required" | "value" | "onValueChange"
       >
     >
->({
+  | Required<
+      Pick<
+        DatePickerSingleRequiredProps,
+        "mode" | "required" | "value" | "onValueChange"
+      >
+    >
+  | Required<
+      Pick<
+        DatePickerMultipleProps,
+        "mode" | "required" | "value" | "onValueChange"
+      >
+    >
+  | Required<
+      Pick<
+        DatePickerMultipleRequiredProps,
+        "mode" | "required" | "value" | "onValueChange"
+      >
+    >
+  | Required<
+      Pick<
+        DatePickerRangeProps,
+        "mode" | "required" | "value" | "onValueChange"
+      >
+    >
+  | Required<
+      Pick<
+        DatePickerRangeRequiredProps,
+        "mode" | "required" | "value" | "onValueChange"
+      >
+    >
+)
+
+const DatePickerContext = React.createContext<DatePickerContextProps>({
+  mode: "single",
   formatStr: "PPP",
   inputFormatStr: "yyyy-MM-dd",
   month: undefined,
   onMonthChange: () => {},
-  value: undefined,
+  value: null,
   onValueChange: () => {},
   disabled: false,
   required: false,
@@ -48,7 +76,86 @@ const DatePickerContext = React.createContext<
 
 export const useDatePickerContext = () => React.useContext(DatePickerContext)
 
-export const DatePicker = ({
+interface DatePickerBaseProps
+  extends React.ComponentProps<typeof PopoverPrimitive.Root> {
+  mode?: DatePickerMode | undefined
+  required?: boolean
+  formatStr?: string
+  inputFormatStr?: string
+  month?: Date
+  defaultMonth?: Date
+  onMonthChange?: (month: Date) => void
+  disabled?: boolean
+}
+
+type DatePickerValue<T extends DatePickerMode = "single"> = T extends "single"
+  ? Date
+  : T extends "multiple"
+    ? Date[]
+    : T extends "range"
+      ? DateRange
+      : never
+
+interface DatePickerSingleProps {
+  mode: "single"
+  required?: false | undefined
+  value?: Date | null
+  defaultValue?: Date
+  onValueChange?: (value: Date | null) => void
+}
+
+interface DatePickerSingleRequiredProps {
+  mode: "single"
+  required: true
+  value?: Date
+  defaultValue?: Date
+  onValueChange?: (value: Date) => void
+}
+
+interface DatePickerMultipleProps {
+  mode: "multiple"
+  required?: false | undefined
+  value?: Date[] | null
+  defaultValue?: Date[]
+  onValueChange?: (value: Date[] | null) => void
+}
+
+interface DatePickerMultipleRequiredProps {
+  mode: "multiple"
+  required: true
+  value?: Date[]
+  defaultValue?: Date[]
+  onValueChange?: (value: Date[]) => void
+}
+
+interface DatePickerRangeProps {
+  mode: "range"
+  required?: false | undefined
+  value?: DateRange | null
+  defaultValue?: DateRange
+  onValueChange?: (value: DateRange | null) => void
+}
+
+interface DatePickerRangeRequiredProps {
+  mode: "range"
+  required: true
+  value?: DateRange
+  defaultValue?: DateRange
+  onValueChange?: (value: DateRange) => void
+}
+
+type DatePickerProps = DatePickerBaseProps &
+  (
+    | DatePickerSingleProps
+    | DatePickerSingleRequiredProps
+    | DatePickerMultipleProps
+    | DatePickerMultipleRequiredProps
+    | DatePickerRangeProps
+    | DatePickerRangeRequiredProps
+  )
+
+export const DatePicker = <T extends DatePickerMode = "single">({
+  mode = "single" as T,
   formatStr = "PPP",
   inputFormatStr = "yyyy-MM-dd",
   open,
@@ -63,13 +170,13 @@ export const DatePicker = ({
   defaultValue,
   onValueChange,
   disabled,
-  required,
+  required = false,
 }: DatePickerProps) => {
   // Use `null` as empty value when in controlled mode.
-  const [value, setValue] = useControllableState<Date | null>({
-    prop: valueProp,
-    defaultProp: defaultValue,
-    onChange: onValueChange,
+  const [value, setValue] = useControllableState<DatePickerValue<T>>({
+    prop: valueProp as DatePickerValue<T>,
+    defaultProp: defaultValue as DatePickerValue<T>,
+    onChange: onValueChange as (value: DatePickerValue<T>) => void,
   })
   const [month, setMonth] = useControllableState({
     prop: monthProp,
@@ -79,16 +186,19 @@ export const DatePicker = ({
 
   return (
     <DatePickerContext.Provider
-      value={{
-        formatStr,
-        inputFormatStr,
-        month,
-        onMonthChange: setMonth,
-        value,
-        onValueChange: setValue,
-        disabled,
-        required,
-      }}
+      value={
+        {
+          mode,
+          required,
+          formatStr,
+          inputFormatStr,
+          month,
+          onMonthChange: setMonth,
+          value,
+          onValueChange: setValue,
+          disabled,
+        } as DatePickerContextProps
+      }
     >
       <PopoverPrimitive.Root
         open={open}
@@ -111,8 +221,20 @@ export const DatePickerInput = React.forwardRef<
     "inputFormatStr" | "onValueChange"
   >
 >((props, ref) => {
-  const { inputFormatStr, onMonthChange, value, onValueChange } =
-    useDatePickerContext()
+  const {
+    mode,
+    inputFormatStr,
+    onMonthChange,
+    value,
+    onValueChange,
+    required,
+  } = useDatePickerContext()
+
+  if (mode !== "single") {
+    throw new Error(
+      '<DatePickerInput> should only be used when mode is "single"'
+    )
+  }
 
   return (
     <DateFieldPrimitive.Root
@@ -123,7 +245,7 @@ export const DatePickerInput = React.forwardRef<
         if (date) {
           onValueChange(date)
           onMonthChange(date)
-        } else {
+        } else if (!required) {
           onValueChange(null)
         }
       }}
@@ -148,7 +270,10 @@ export const DatePickerClear = React.forwardRef<
     <Primitive.button
       ref={ref}
       disabled={required || !value}
-      onClick={composeEventHandlers(onClick, () => onValueChange(null))}
+      onClick={composeEventHandlers(
+        onClick,
+        () => !required && onValueChange(null)
+      )}
       {...props}
     />
   )
@@ -164,7 +289,20 @@ export const DatePickerValue = React.forwardRef<
   React.ElementRef<typeof Primitive.span>,
   DatePickerValueProps
 >(({ placeholder, children, ...props }, ref) => {
-  const { formatStr, value } = useDatePickerContext()
+  const { mode, formatStr, value } = useDatePickerContext()
+
+  const formattedValue = React.useMemo(() => {
+    if (!value) {
+      return null
+    }
+    if (mode === "single") {
+      return format(value, formatStr)
+    }
+    if (mode === "multiple") {
+      return value.map((v) => format(v, formatStr)).join(", ")
+    }
+    return `${value.from ? format(value.from, formatStr) : "Select a date"} - ${value.to ? format(value.to, formatStr) : "Select a date"}`
+  }, [mode, value, formatStr])
 
   return (
     <Primitive.span
@@ -172,7 +310,7 @@ export const DatePickerValue = React.forwardRef<
       data-placeholder={!value ? true : undefined}
       {...props}
     >
-      {!value ? placeholder : children ?? format(value, formatStr)}
+      {!value ? placeholder : children ?? formattedValue}
     </Primitive.span>
   )
 })
@@ -181,32 +319,54 @@ DatePickerValue.displayName = "DatePickerValue"
 export const DatePickerContent = PopoverPrimitive.Content
 
 interface DatePickerCalendarProps
-  extends Omit<DayPickerPrimitiveProps, "mode"> {
+  extends Omit<
+    DayPickerPrimitiveProps,
+    | "mode"
+    | "selected"
+    | "onSelect"
+    | "month"
+    | "onMonthChange"
+    | "disabled"
+    | "required"
+  > {
   asChild?: boolean
   children?: React.ReactNode
 }
 
-// TODO: add range support
+export const DatePickerCalendar = ({
+  asChild,
+  autoFocus = true,
+  ...props
+}: DatePickerCalendarProps) => {
+  const {
+    mode,
+    month,
+    onMonthChange,
+    value,
+    onValueChange,
+    disabled,
+    required,
+  } = useDatePickerContext()
 
-export const DatePickerCalendar = React.forwardRef<
-  React.ElementRef<typeof DayPicker>,
-  DatePickerCalendarProps
->(({ asChild, autoFocus = true, ...props }, ref) => {
-  const { month, onMonthChange, value, onValueChange, disabled, required } =
-    useDatePickerContext()
-
-  const Comp = asChild ? Slot : DayPicker
+  const Comp = asChild ? (Slot as typeof DayPicker) : DayPicker
 
   return (
     <Comp
-      ref={ref}
-      mode="single"
-      selected={value === null ? undefined : value}
-      onSelect={(date) => {
-        if (!date) {
+      mode={mode}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      selected={value === null ? undefined : (value as any)}
+      onSelect={(value: Date | Date[] | DateRange | undefined) => {
+        if (!value && !required) {
           onValueChange(null)
-        } else {
-          onValueChange(date)
+        }
+        if (mode === "single") {
+          onValueChange(value as Date)
+        }
+        if (mode === "multiple") {
+          onValueChange(value as Date[])
+        }
+        if (mode === "range") {
+          onValueChange(value as DateRange)
         }
       }}
       month={month}
@@ -217,8 +377,7 @@ export const DatePickerCalendar = React.forwardRef<
       {...props}
     />
   )
-})
-DatePickerCalendar.displayName = "DatePickerCalendar"
+}
 
 const Root = DatePicker
 const Input = DatePickerInput
