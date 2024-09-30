@@ -11,11 +11,11 @@ import {
   TimelineTitle,
 } from "@/registry/new-york/ui/timeline"
 
-export const TimelineDefaultExample = (
+export const TimelineAlternateExample = (
   props: React.ComponentProps<typeof Timeline>
 ) => (
   <Timeline {...props}>
-    <TimelineItem>
+    <TimelineItem className="before:flex-1">
       <TimelineSeparator>
         <TimelineDot />
         <TimelineConnector />
@@ -25,17 +25,17 @@ export const TimelineDefaultExample = (
         <TimelineDescription>Because you need strength</TimelineDescription>
       </TimelineContent>
     </TimelineItem>
-    <TimelineItem>
-      <TimelineSeparator>
-        <TimelineDot />
-        <TimelineConnector />
-      </TimelineSeparator>
+    <TimelineItem className="after:flex-1">
       <TimelineContent>
         <TimelineTitle>Code</TimelineTitle>
         <TimelineDescription>Because it's awesome!</TimelineDescription>
       </TimelineContent>
+      <TimelineSeparator>
+        <TimelineDot />
+        <TimelineConnector />
+      </TimelineSeparator>
     </TimelineItem>
-    <TimelineItem>
+    <TimelineItem className="before:flex-1">
       <TimelineSeparator>
         <TimelineDot />
         <TimelineConnector />
@@ -45,16 +45,16 @@ export const TimelineDefaultExample = (
         <TimelineDescription>Because you need rest</TimelineDescription>
       </TimelineContent>
     </TimelineItem>
-    <TimelineItem>
-      <TimelineSeparator>
-        <TimelineDot />
-      </TimelineSeparator>
+    <TimelineItem className="after:flex-1">
       <TimelineContent>
         <TimelineTitle>Repeat</TimelineTitle>
         <TimelineDescription>
           Because this is the life you love!
         </TimelineDescription>
       </TimelineContent>
+      <TimelineSeparator>
+        <TimelineDot />
+      </TimelineSeparator>
     </TimelineItem>
   </Timeline>
 )

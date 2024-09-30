@@ -1,4 +1,10 @@
 import * as React from "react"
+import {
+  CodeIcon,
+  CubeIcon,
+  HeartFilledIcon,
+  MoonIcon,
+} from "@radix-ui/react-icons"
 
 import {
   Timeline,
@@ -11,13 +17,15 @@ import {
   TimelineTitle,
 } from "@/registry/new-york/ui/timeline"
 
-export const TimelineDefaultExample = (
+export const TimelineIconExample = (
   props: React.ComponentProps<typeof Timeline>
 ) => (
   <Timeline {...props}>
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot />
+        <TimelineDot>
+          <CubeIcon />
+        </TimelineDot>
         <TimelineConnector />
       </TimelineSeparator>
       <TimelineContent>
@@ -27,7 +35,9 @@ export const TimelineDefaultExample = (
     </TimelineItem>
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot />
+        <TimelineDot>
+          <CodeIcon />
+        </TimelineDot>
         <TimelineConnector />
       </TimelineSeparator>
       <TimelineContent>
@@ -37,7 +47,9 @@ export const TimelineDefaultExample = (
     </TimelineItem>
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot />
+        <TimelineDot>
+          <MoonIcon />
+        </TimelineDot>
         <TimelineConnector />
       </TimelineSeparator>
       <TimelineContent>
@@ -47,7 +59,9 @@ export const TimelineDefaultExample = (
     </TimelineItem>
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot />
+        <TimelineDot>
+          <HeartFilledIcon />
+        </TimelineDot>
       </TimelineSeparator>
       <TimelineContent>
         <TimelineTitle>Repeat</TimelineTitle>
