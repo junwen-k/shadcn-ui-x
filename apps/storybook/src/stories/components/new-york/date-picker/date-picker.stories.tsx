@@ -14,6 +14,8 @@ import { Toaster } from "@/registry/new-york/ui/toaster"
 import { DatePickerDefaultExample } from "./date-picker-default-example"
 import { DatePickerFormExample } from "./date-picker-form-example"
 import { DatePickerInputExample } from "./date-picker-input-example"
+import { DatePickerMultipleExample } from "./date-picker-multiple-example"
+import { DatePickerRangeExample } from "./date-picker-range-example"
 
 /**
  * Date picker allow users to enter or select a date value.
@@ -64,6 +66,14 @@ export const Required = {
 
 export const Input = {
   render: DatePickerInputExample,
+} satisfies Story
+
+export const Multiple = {
+  render: DatePickerMultipleExample,
+} satisfies Story
+
+export const Range = {
+  render: DatePickerRangeExample,
 } satisfies Story
 
 export const WithForm = {

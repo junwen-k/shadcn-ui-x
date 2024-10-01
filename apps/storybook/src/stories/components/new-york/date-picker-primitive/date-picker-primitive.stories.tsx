@@ -4,6 +4,8 @@ import * as DatePickerPrimitive from "@/registry/new-york/ui/date-picker-primiti
 
 import { DatePickerPrimitiveDefaultExample } from "./date-picker-primitive-default-example"
 import { DatePickerPrimitiveInputExample } from "./date-picker-primitive-input-example"
+import { DatePickerPrimitiveMultipleExample } from "./date-picker-primitive-multiple-example"
+import { DatePickerPrimitiveRangeExample } from "./date-picker-primitive-range-example"
 
 /**
  * Date Picker primitive built on top of [Radix UI](https://www.radix-ui.com/primitives) and [React DayPicker](https://daypicker.dev/).
@@ -45,6 +47,14 @@ export const Required = {
   args: {
     required: true,
   },
+} satisfies Story
+
+export const Multiple = {
+  render: DatePickerPrimitiveMultipleExample,
+} satisfies Story
+
+export const Range = {
+  render: DatePickerPrimitiveRangeExample,
 } satisfies Story
 
 export const Input = {

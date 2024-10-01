@@ -291,6 +291,16 @@ export const DatePickerValue = React.forwardRef<
 >(({ placeholder, children, ...props }, ref) => {
   const { mode, formatStr, value } = useDatePickerContext()
 
+  const isValueEmpty = React.useMemo(() => {
+    if (mode === "single") {
+      return !value
+    }
+    if (mode === "multiple") {
+      return !value?.length
+    }
+    return !value?.from
+  }, [mode, value])
+
   const formattedValue = React.useMemo(() => {
     if (!value) {
       return null
@@ -307,10 +317,10 @@ export const DatePickerValue = React.forwardRef<
   return (
     <Primitive.span
       ref={ref}
-      data-placeholder={!value ? true : undefined}
+      data-placeholder={isValueEmpty ? true : undefined}
       {...props}
     >
-      {!value ? placeholder : children ?? formattedValue}
+      {isValueEmpty ? placeholder : children ?? formattedValue}
     </Primitive.span>
   )
 })
