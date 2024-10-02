@@ -46,7 +46,7 @@ const DateField = React.forwardRef<
     )
     React.useEffect(() => {
       setInputValue(value ? format(value, inputFormatStr) : "")
-    }, [value])
+    }, [value, inputFormatStr])
 
     return (
       <Primitive.input
