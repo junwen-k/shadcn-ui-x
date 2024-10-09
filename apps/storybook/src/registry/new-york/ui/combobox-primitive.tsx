@@ -11,7 +11,10 @@ import { Command as CommandPrimitive } from "cmdk"
 
 type ComboboxContextProps = {
   inputValue: string
-  onInputValueChange: (inputValue: string) => void
+  onInputValueChange: (
+    inputValue: string,
+    reason: "inputChange" | "itemSelect" | "clearClick"
+  ) => void
   onInputBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -58,7 +61,10 @@ interface ComboboxBaseProps
   type?: ComboboxType | undefined
   inputValue?: string
   defaultInputValue?: string
-  onInputValueChange?: (inputValue: string) => void
+  onInputValueChange?: (
+    inputValue: string,
+    reason: "inputChange" | "itemSelect" | "clearClick"
+  ) => void
   onInputBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void
   disabled?: boolean
   required?: boolean
@@ -118,7 +124,6 @@ export const Combobox = React.forwardRef(
     const [inputValue = "", setInputValue] = useControllableState({
       prop: inputValueProp,
       defaultProp: defaultInputValue,
-      onChange: onInputValueChange,
     })
     const [open = false, setOpen] = useControllableState({
       prop: openProp,
@@ -134,6 +139,15 @@ export const Combobox = React.forwardRef(
         null
       )
 
+    const handleInputValueChange: ComboboxContextProps["onInputValueChange"] =
+      React.useCallback(
+        (inputValue, reason) => {
+          setInputValue(inputValue)
+          onInputValueChange?.(inputValue, reason)
+        },
+        [setInputValue, onInputValueChange]
+      )
+
     return (
       <ComboboxContext.Provider
         value={
@@ -142,7 +156,7 @@ export const Combobox = React.forwardRef(
             value,
             onValueChange: setValue,
             inputValue,
-            onInputValueChange: setInputValue,
+            onInputValueChange: handleInputValueChange,
             onInputBlur,
             open,
             onOpenChange: setOpen,
@@ -332,7 +346,7 @@ export const ComboboxInput = React.forwardRef<
           onOpenChange(true)
         }
         // Schedule input value change to the next tick.
-        setTimeout(() => onInputValueChange(search))
+        setTimeout(() => onInputValueChange(search, "inputChange"))
         if (!search && type === "single") {
           onValueChange("")
         }
@@ -388,7 +402,7 @@ export const ComboboxClear = React.forwardRef<
         } else {
           onValueChange([])
         }
-        onInputValueChange("")
+        onInputValueChange("", "clearClick")
       })}
       {...props}
     />
@@ -495,10 +509,10 @@ export const ComboboxItem = React.forwardRef<
                 ? value.filter((v) => v !== valueProp)
                 : [...value, valueProp]
             )
-            onInputValueChange("")
+            onInputValueChange("", "itemSelect")
           } else {
             onValueChange(valueProp)
-            onInputValueChange(inputValue)
+            onInputValueChange(inputValue, "itemSelect")
             // Schedule open change to the next tick.
             setTimeout(() => onOpenChange(false))
           }
