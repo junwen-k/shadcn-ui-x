@@ -228,6 +228,7 @@ export const DatePickerInput = React.forwardRef<
     value,
     onValueChange,
     required,
+    disabled,
   } = useDatePickerContext()
 
   if (mode !== "single") {
@@ -250,6 +251,7 @@ export const DatePickerInput = React.forwardRef<
         }
       }}
       placeholder={inputFormatStr}
+      disabled={disabled}
       {...props}
     />
   )

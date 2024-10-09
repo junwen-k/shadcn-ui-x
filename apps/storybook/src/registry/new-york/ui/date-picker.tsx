@@ -50,15 +50,19 @@ DatePickerInputBase.displayName = "DatePickerInputBase"
 export const DatePickerInput = React.forwardRef<
   React.ElementRef<typeof InputBaseInput>,
   React.ComponentPropsWithoutRef<typeof InputBaseInput>
->((props, ref) => (
-  <DatePickerInputBase>
-    <InputBaseControl>
-      <DatePickerPrimitive.Input asChild>
-        <InputBaseInput ref={ref} {...props} />
-      </DatePickerPrimitive.Input>
-    </InputBaseControl>
-  </DatePickerInputBase>
-))
+>((props, ref) => {
+  const { disabled } = DatePickerPrimitive.useDatePickerContext()
+
+  return (
+    <DatePickerInputBase disabled={disabled}>
+      <InputBaseControl>
+        <DatePickerPrimitive.Input asChild>
+          <InputBaseInput ref={ref} {...props} />
+        </DatePickerPrimitive.Input>
+      </InputBaseControl>
+    </DatePickerInputBase>
+  )
+})
 DatePickerInput.displayName = "DatePickerInput"
 
 export const DatePickerTrigger = React.forwardRef<
