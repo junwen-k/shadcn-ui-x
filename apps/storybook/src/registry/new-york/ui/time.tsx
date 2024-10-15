@@ -20,19 +20,15 @@ export const Time = React.forwardRef<React.ElementRef<"time">, TimeProps>(
       ...props
     },
     ref
-  ) => {
-    console.log(children)
-
-    return (
-      <time
-        ref={ref}
-        dateTime={format(children, dateTimeFormatStr)}
-        className={cn("whitespace-nowrap", className)}
-        {...props}
-      >
-        {format(children, formatStr)}
-      </time>
-    )
-  }
+  ) => (
+    <time
+      ref={ref}
+      dateTime={format(children, dateTimeFormatStr)}
+      className={cn("whitespace-nowrap", className)}
+      {...props}
+    >
+      {format(children, formatStr)}
+    </time>
+  )
 )
 Time.displayName = "Time"
